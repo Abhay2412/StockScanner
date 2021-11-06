@@ -10,11 +10,11 @@ PRIMARY KEY(P_ID)
 
 DROP TABLE IF EXISTS Business;
 CREATE TABLE Business (
-BusinessID VARCHAR(4) NOT NULL,
+Business_ID VARCHAR(4) NOT NULL,
 Address VARCHAR(45) NOT NULL, 
-FoundingDate DATE NOT NULL,
-CompanyName VARCHAR(25) NOT NULL,
-PRIMARY KEY(BusinessID)
+Founding_Date DATE NOT NULL,
+Business_Name VARCHAR(25) NOT NULL,
+PRIMARY KEY(Business_ID)
 );
 
 DROP TABLE IF EXISTS User;
@@ -29,7 +29,7 @@ DROP TABLE IF EXISTS Exchanges;
 CREATE TABLE Exchanges (
 Name VARCHAR(25) NOT NULL,
 Location VARCHAR(25) NOT NULL, 
-NumberOfTickers INT NOT NULL, 
+Number_of_Tickers INT NOT NULL, 
 PRIMARY KEY(Name)
 );
 
@@ -87,8 +87,8 @@ CONSTRAINT Username2 FOREIGN KEY (Username) REFERENCES User(Username),
 CONSTRAINT ListNumber FOREIGN KEY (ListNumber) REFERENCES Watchlist(ListNumber)
 );
 
-DROP TABLE IF EXISTS BusinessUser;
-CREATE TABLE BusinessUser (
+DROP TABLE IF EXISTS Professional;
+CREATE TABLE Professional (
 Username VARCHAR(16) NOT NULL,
 ListNumber INT NOT NULL, 
 PRIMARY KEY(Username),
