@@ -1,8 +1,18 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect, request
+from flask_mysqldb import MySQL
+import yaml
+
 from forms import RegistrationForm, LoginForm
-app = Flask(__name__)
+app = Flask(__name__) #Instantiating it here
 
+#Configure db
+db = yaml.safe_load(open('db.yaml'))
+app.config['MYSQL_HOST'] = db['mysql_host']
+app.config['MYSQL_USER'] = db['mysql_user']
+app.config['MYSQL_PASSWORD'] = db['mysql_password']
+app.config ['MYSQL_DB'] = db['mysql_db']
 
+mysql = MySQL(app)
 
 app.config['SECRET_KEY'] = 'enPOzgeOGg8bczEFhpW9XB41j3Obd9tx'
 
@@ -32,8 +42,26 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         flash(f'Account created for {form.username.data}!', 'success')
+        if request.method == 'POST':
+            userDetails = request.form
+            username = userDetails['username']
+            password = userDetails['password']
+            permissions = 'testuser'
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)", (username, password, permissions))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showusers'))  
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form = form)
+
+@app.route("/usersall")
+def showusers():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM USER")
+    if resultValue > 0:
+        userDetails = cur.fetchall()
+        return render_template('usersall.html', title = 'UsersAll', userDetails=userDetails)
 
 @app.route("/login")
 def login():
@@ -48,4 +76,5 @@ def login():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) #Run it here if the name equals name, also the debug ensures that any update made here will be 
+    #changed here immediately onto the server 
