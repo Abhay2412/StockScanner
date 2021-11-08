@@ -1,0 +1,1 @@
+C:\Users\timm\PycharmProjects\StockScanner\backend\db.yaml
