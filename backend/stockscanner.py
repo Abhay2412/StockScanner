@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, redirect, request
+from flask import Flask, render_template, url_for, flash, redirect, request, jsonify
 from flask_mysqldb import MySQL
 import yaml
 
@@ -61,7 +61,7 @@ def showusers():
     resultValue = cur.execute("SELECT * FROM USER")
     if resultValue > 0:
         userDetails = cur.fetchall()
-        return render_template('usersall.html', title = 'UsersAll', userDetails=userDetails)
+        return jsonify({'username': userDetails})
 
 @app.route("/login")
 def login():
