@@ -33,14 +33,6 @@ Number_of_Tickers INT NOT NULL,
 PRIMARY KEY(Name)
 );
 
-DROP TABLE IF EXISTS BelongsTo;
-CREATE TABLE BelongsTo (
-ID VARCHAR(4) NOT NULL,
-Name VARCHAR(25) NOT NULL,
-PRIMARY KEY(ID),
-CONSTRAINT Name FOREIGN KEY (Name) REFERENCES Exchanges(Name)
-);
-
 DROP TABLE IF EXISTS Stock;
 CREATE TABLE Stock(
 ID VARCHAR(12) NOT NULL,
@@ -56,8 +48,16 @@ Stock_Price INT NOT NULL,
 Sector VARCHAR(255) NOT NULL,
 PRIMARY KEY (ID),
 CONSTRAINT BusinessID FOREIGN KEY (Company_ID) REFERENCES Business(Business_ID),
-CONSTRAINT PredictionID FOREIGN KEY (Prediction_ID) REFERENCES Prediction(P_ID),
-CONSTRAINT ID FOREIGN KEY (ID) REFERENCES BelongsTo(ID)
+CONSTRAINT PredictionID FOREIGN KEY (Prediction_ID) REFERENCES Prediction(P_ID)
+);
+
+DROP TABLE IF EXISTS BelongsTo;
+CREATE TABLE BelongsTo (
+ID VARCHAR(4) NOT NULL,
+Name VARCHAR(25) NOT NULL,
+PRIMARY KEY(ID),
+CONSTRAINT ID10 FOREIGN KEY (ID) REFERENCES Stock(ID),
+CONSTRAINT Name FOREIGN KEY (Name) REFERENCES Exchanges(Name)
 );
 
 DROP TABLE IF EXISTS Analyst;
@@ -164,3 +164,12 @@ Status_Incomplete VARCHAR(255) NOT NULL,
 PRIMARY KEY(Offering_ID),
 CONSTRAINT ID4 FOREIGN KEY (ID) REFERENCES Stock(ID)
 );
+
+INSERT INTO BUSINESS (Business_ID, Address, Founding_Date, Business_Name)
+VALUES ('AAPL', '1234 California Road', '1976-1-04', 'Apple');
+
+INSERT INTO PREDICTION (P_ID)
+VALUES ('1001');
+
+INSERT INTO STOCK (ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector)
+VALUES ('AAPL.NASDAQ', 'AAPL', '1001', 160, 1, 1, 0, 0, 1, 151, 'Tech');
