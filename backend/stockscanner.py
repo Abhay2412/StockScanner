@@ -55,14 +55,6 @@ def register():
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form = form)
 
-@app.route("/usersall")
-def showusers():
-    cur = mysql.connection.cursor()
-    resultValue = cur.execute("SELECT * FROM USER")
-    if resultValue > 0:
-        userDetails = cur.fetchall()
-        return jsonify({'username': userDetails})
-
 @app.route("/login")
 def login():
     form = LoginForm()
@@ -73,6 +65,36 @@ def login():
         else:
             flash('Login Failed. Please check your credentials again.', 'danger')
     return render_template('login.html', title='Login', form = form)
+
+
+#----------------------------------------Start of the API Calls------------------------------------------------------------
+@app.route("/usersall")
+def showusers():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM USER")
+    if resultValue > 0:
+        userDetails = cur.fetchall()
+        return jsonify({'username': userDetails})
+
+@app.route("/stocksshowing")
+def showstocks():
+    values_to_insert_stocks = [('AAPL.NASDAQ', 'AAPL', 1, 160, 1, 1, 0, 0, 1, 151, "Tech" ),
+     ('MSFT.NASDAQ', 'MSFT', 2, 350, 1, 1, 0, 0, 1, 337, "Tech" ), 
+     ('WMT.NYSE', 'WMT', 3, 130, 0, 0, 1, 1, 0, 149, "CS" )]
+     query = "INSERT INTO Stock (col1, col2, col3) VALUES " + ",".join("(%s, %s, %s)" for _ in values_to_insert)
+    cur = mysql.connection.cursor()
+    cur.execute("INSERT INTO STOCKS()")
+
+
+
+
+
+flattened_values = [item for sublist in values_to_insert for item in sublist]
+cursor.execute(query, flattened_values)
+
+con.commit()
+#----------------------------------------End of the API Calls--------------------------------------------------------------
+
 
 
 if __name__ == '__main__':
