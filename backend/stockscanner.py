@@ -88,7 +88,7 @@ def exchange():
       new_Location = json['Location']
       new_Number_of_Tickers = json['Number_of_Tickers']
       
-      cur.execute("INSERT INTO EXCHANGE(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (new_Name, new_Location, new_Number_of_Tickers))
+      cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (new_Name, new_Location, new_Number_of_Tickers))
       
       mysql.connection.commit()
       cur.close()
@@ -99,7 +99,7 @@ def exchange():
         
         cur = mysql.connection.cursor()
 
-        cur.execute("SELECT * FROM EXCHANGE")
+        cur.execute("SELECT * FROM EXCHANGES")
         
         exchange_row = cur.fetchall()
         respone = jsonify({'Exchange': exchange_row})
@@ -108,6 +108,45 @@ def exchange():
         cur.close()
         
         return respone
+    
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_Name = json['Name']
+        new_Location = json['Location']
+        new_Number_of_Tickers = json['Number_of_Tickers']
+
+        cur.execute("UPDATE EXCHANGES SET Name=%s, Location=%s, Number_of_Tickers=%s WHERE Name=%s", (new_Name, new_Location, new_Number_of_Tickers, new_Name))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("Exchange updated successfully")
+
+@app.route("/exchange/<string:Name>", methods = ['DELETE'])
+def delete_exchange(Name):
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM EXCHANGES WHERE Name = %s", ([Name]))
+
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify("Exchange deleted successfully")
+
+@app.route("/exchange/<string:Name>", methods = ['GET'])
+def get_exchange(Name):
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM EXCHANGES WHERE Name = %s", ([Name]))
+    specific_exchange_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify({'Exchange': specific_exchange_details})
+
 
 #-----------Analyst API Calls--------------------------
 @app.route("/analyst", methods = ['POST', 'GET', 'PUT'])
