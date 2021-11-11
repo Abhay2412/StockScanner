@@ -76,20 +76,101 @@ def showusers():
     if resultValue > 0:
         userDetails = cur.fetchall()
         return jsonify({'username': userDetails})
+     
+#-----------Analyst API Calls--------------------------
+@app.route("/analyst", methods = ['POST', 'GET', 'PUT'])
+def analyst():
+    if request.method == 'POST':
+      
+      cur = mysql.connection.cursor()
+      json = request.json
+      
+      new_ID = json['ID']
+      new_Company_ID = json['Company_ID']
+      new_Prediction_ID = json['Prediction_ID']
+      new_Predict_Stock_Price = json['Predict_Stock_Price']
+      new_Strong_Buy = json['Strong_Buy']
+      new_Rating_Buy = json['Rating_Buy']
+      new_Rating_Sell = json['Rating_Sell']
+      new_Strong_Sell = json['Strong_Sell']
+      new_Rating_Hold = json['Rating_Hold']
+      new_Stock_Price = json['Stock_Price']
+      new_Sector = json['Sector']
+      new_Address = json['Address']
+      new_Founding_Date = json['Founding_Date']
+      new_Business_Name = json['Business_Name']
+      new_Analyst_ID_Number = json['Analyst_ID_Number']
+      new_Name = json['Name']
+      new_Company = json['Company']      
+      
+      cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
+      cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
+      cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
+      
+      cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)", (new_Analyst_ID_Number, new_ID, new_Name, new_Company))
+      
+      mysql.connection.commit()
+      cur.close()
+      
+      return jsonify("Analyst inserted successfully")
 
-@app.route("/stocksshowing", methods = ['GET'])
-def showstocks():
+    if request.method == 'GET':
+
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT Analyst_ID_Number, ID, Name, Company FROM ANALYST")
+        
+        analyst_row = cur.fetchall()
+        respone = jsonify({'Analyst': analyst_row})
+        respone.status_code = 200
+        
+        cur.close()
+        
+        return respone
+
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_Analyst_ID_Number = json['Analyst_ID_Number']
+        new_ID = json['ID']
+        new_Name = json['Name']
+        new_Company = json['Company']  
+
+        cur.execute("UPDATE ANALYST SET Analyst_ID_Number=%s, ID=%s, Name=%s, Company=%s WHERE Analyst_ID_Number=%s", (new_Analyst_ID_Number, new_ID, new_Name, new_Company, new_Analyst_ID_Number))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("Analyst updated successfully")
+
+@app.route("/analyst/<string:Analyst_ID_Number>", methods = ['DELETE'])
+def delete_analyst(Analyst_ID_Number):
+
     cur = mysql.connection.cursor()
-    cur.execute("SELECT ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector FROM STOCK")
-    stocks_row = cur.fetchall()
-    respone = jsonify({'Stock': stocks_row})
-    respone.status_code = 200
+    cur.execute("DELETE FROM ANALYST WHERE Analyst_ID_Number = %s", ([Analyst_ID_Number]))
+
+    mysql.connection.commit()
     cur.close()
-    return respone  
+        
+    return jsonify("Analyst deleted successfully")
+
+@app.route("/analyst/<string:Analyst_ID_Number>", methods = ['GET'])
+def get_analyst(Analyst_ID_Number):
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([Analyst_ID_Number]))
+    specific_analyst_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify({'Analyst': specific_analyst_details})
 
 
-@app.route("/business", methods = ['POST'])
-def addbusiness():
+#-----------Business API Calls--------------------------
+@app.route("/business", methods = ['POST', 'GET', 'PUT'])
+def business():
     if request.method == 'POST':
       
       cur = mysql.connection.cursor()
@@ -107,8 +188,63 @@ def addbusiness():
       
       return jsonify("Business inserted successfully")
 
-@app.route("/stocks", methods = ['POST'])
-def addstocks():
+    if request.method == 'GET':
+
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT Business_ID, Address, Founding_Date, Business_Name FROM BUSINESS")
+        
+        business_row = cur.fetchall()
+        respone = jsonify({'Business': business_row})
+        respone.status_code = 200
+        
+        cur.close()
+        
+        return respone
+
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_Business_ID = json['Business_ID']
+        new_Address = json['Address']
+        new_Founding_Date = json['Founding_Date']
+        new_Business_Name = json['Business_Name']
+
+        cur.execute("UPDATE BUSINESS SET Business_ID=%s, Address=%s, Founding_Date=%s, Business_Name=%s WHERE Business_ID=%s", (new_Business_ID, new_Address, new_Founding_Date, new_Business_Name, new_Business_ID))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("Business updated successfully")
+
+@app.route("/business/<string:Business_ID>", methods = ['DELETE'])
+def delete_business(Business_ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM BUSINESS WHERE Business_ID = %s", ([Business_ID]))
+
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify("Business deleted successfully")
+
+@app.route("/business/<string:Business_ID>", methods = ['GET'])
+def get_business(Business_ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([Business_ID]))
+    specific_business_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify({'Stock': specific_business_details})
+
+
+#-----------Stock API Calls--------------------------
+@app.route("/stocks", methods = ['POST', 'GET', 'PUT'])
+def stocks():
     if request.method == 'POST':
         
         cur = mysql.connection.cursor()
@@ -137,7 +273,65 @@ def addstocks():
         cur.close()
         
         return jsonify("Stock inserted successfully")
+    
+    if request.method == 'GET':
 
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector FROM STOCK")
+        
+        stocks_row = cur.fetchall()
+        respone = jsonify({'Stock': stocks_row})
+        respone.status_code = 200
+        
+        cur.close()
+        
+        return respone 
+
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_ID = json['ID']
+        new_Company_ID = json['Company_ID']
+        new_Prediction_ID = json['Prediction_ID']
+        new_Predict_Stock_Price = json['Predict_Stock_Price']
+        new_Strong_Buy = json['Strong_Buy']
+        new_Rating_Buy = json['Rating_Buy']
+        new_Rating_Sell = json['Rating_Sell']
+        new_Strong_Sell = json['Strong_Sell']
+        new_Rating_Hold = json['Rating_Hold']
+        new_Stock_Price = json['Stock_Price']
+        new_Sector = json['Sector']
+
+        cur.execute("UPDATE STOCK SET ID=%s, Company_ID=%s, Prediction_ID=%s, Predict_Stock_Price=%s, Strong_Buy=%s, Rating_Buy=%s, Rating_Sell=%s, Strong_Sell=%s, Rating_Hold=%s, Stock_Price=%s, Sector=%s WHERE ID=%s", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector, new_ID))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("Stock updated successfully")
+
+@app.route("/stocks/<string:ID>", methods = ['DELETE'])
+def delete_stocks(ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM STOCK WHERE ID = %s", ([ID]))
+
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify("Stock deleted successfully")
+
+@app.route("/stocks/<string:ID>", methods = ['GET'])
+def get_stock(ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
+    specific_stock_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify({'Stock': specific_stock_details})
 #----------------------------------------End of the API Calls--------------------------------------------------------------
 
 
