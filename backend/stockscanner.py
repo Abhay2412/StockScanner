@@ -77,13 +77,91 @@ def showusers():
         userDetails = cur.fetchall()
         return jsonify({'username': userDetails})
 
+
+#-----------Belongs To API Calls--------------------------
+@app.route("/belongsto", methods = ['POST', 'GET'])
+def belongsto():
+    if request.method == 'POST':
+      cur = mysql.connection.cursor()
+      json = request.json
+      
+      new_ID = json['ID']
+      new_Company_ID = json['Company_ID']
+      new_Prediction_ID = json['Prediction_ID']
+      new_Predict_Stock_Price = json['Predict_Stock_Price']
+      new_Strong_Buy = json['Strong_Buy']
+      new_Rating_Buy = json['Rating_Buy']
+      new_Rating_Sell = json['Rating_Sell']
+      new_Strong_Sell = json['Strong_Sell']
+      new_Rating_Hold = json['Rating_Hold']
+      new_Stock_Price = json['Stock_Price']
+      new_Sector = json['Sector']
+      new_Address = json['Address']
+      new_Founding_Date = json['Founding_Date']
+      new_Business_Name = json['Business_Name']
+
+
+      new_Name = json['Name']
+      new_Location = json['Location']
+      new_Number_of_Tickers = json['Number_of_Tickers']
+      
+      
+      cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
+      cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
+      cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
+
+      cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (new_Name, new_Location, new_Number_of_Tickers))
+      
+      cur.execute("INSERT INTO BELONGSTO(ID, Name) VALUES(%s, %s)", (new_ID, new_Name))
+
+      mysql.connection.commit()
+      cur.close()
+
+      return jsonify("BelongsTo inserted successfully")
+
+    if request.method == 'GET':
+        
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT * FROM BELONGSTO")
+        
+        belongsto_row = cur.fetchall()
+        respone = jsonify({'Belongs To': belongsto_row})
+        respone.status_code = 200
+        
+        cur.close()
+        
+        return respone
+
+@app.route("/belongsto/<string:ID>", methods = ['DELETE'])
+def delete_belongsto(ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM BELONGSTO WHERE ID = %s", ([ID]))
+
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify("BelongsTo deleted successfully")
+
+@app.route("/belongsto/<string:ID>", methods = ['GET'])
+def get_belongsto(ID):
+
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM BELONGSTO WHERE ID = %s", ([ID]))
+    specific_belongsto_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+        
+    return jsonify({'Belongs To': specific_belongsto_details})
+
 #-----------Exchanges API Calls--------------------------
 @app.route("/exchange", methods = ['POST', 'GET', 'PUT'])
 def exchange():
     if request.method == 'POST':
       cur = mysql.connection.cursor()
       json = request.json
-
+        
       new_Name = json['Name']
       new_Location = json['Location']
       new_Number_of_Tickers = json['Number_of_Tickers']
