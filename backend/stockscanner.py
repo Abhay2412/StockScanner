@@ -76,7 +76,39 @@ def showusers():
     if resultValue > 0:
         userDetails = cur.fetchall()
         return jsonify({'username': userDetails})
-     
+
+#-----------Exchanges API Calls--------------------------
+@app.route("/exchange", methods = ['POST', 'GET', 'PUT'])
+def exchange():
+    if request.method == 'POST':
+      cur = mysql.connection.cursor()
+      json = request.json
+
+      new_Name = json['Name']
+      new_Location = json['Location']
+      new_Number_of_Tickers = json['Number_of_Tickers']
+      
+      cur.execute("INSERT INTO EXCHANGE(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (new_Name, new_Location, new_Number_of_Tickers))
+      
+      mysql.connection.commit()
+      cur.close()
+      
+      return jsonify("Exchange inserted successfully")
+
+    if request.method == 'GET':
+        
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT * FROM EXCHANGE")
+        
+        exchange_row = cur.fetchall()
+        respone = jsonify({'Exchange': exchange_row})
+        respone.status_code = 200
+        
+        cur.close()
+        
+        return respone
+
 #-----------Analyst API Calls--------------------------
 @app.route("/analyst", methods = ['POST', 'GET', 'PUT'])
 def analyst():
@@ -118,7 +150,7 @@ def analyst():
 
         cur = mysql.connection.cursor()
 
-        cur.execute("SELECT Analyst_ID_Number, ID, Name, Company FROM ANALYST")
+        cur.execute("SELECT * FROM ANALYST")
         
         analyst_row = cur.fetchall()
         respone = jsonify({'Analyst': analyst_row})
@@ -192,7 +224,7 @@ def business():
 
         cur = mysql.connection.cursor()
 
-        cur.execute("SELECT Business_ID, Address, Founding_Date, Business_Name FROM BUSINESS")
+        cur.execute("SELECT * FROM BUSINESS")
         
         business_row = cur.fetchall()
         respone = jsonify({'Business': business_row})
@@ -277,7 +309,7 @@ def stocks():
     if request.method == 'GET':
 
         cur = mysql.connection.cursor()
-        cur.execute("SELECT ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector FROM STOCK")
+        cur.execute("SELECT * FROM STOCK")
         
         stocks_row = cur.fetchall()
         respone = jsonify({'Stock': stocks_row})
