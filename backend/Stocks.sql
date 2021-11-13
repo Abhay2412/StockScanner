@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS User;
 CREATE TABLE User (
 Username VARCHAR(16) NOT NULL,
 Password VARCHAR(25) NOT NULL,
-Permissions VARCHAR(16) NOT NULL, 
+Permissions VARCHAR(255) NOT NULL, 
 PRIMARY KEY(Username)
 );
 
@@ -93,8 +93,7 @@ List_Number INT NOT NULL,
 Role_Type VARCHAR(13) NOT NULL, 
 PRIMARY KEY(Username),
 CONSTRAINT Username2 FOREIGN KEY (Username) REFERENCES User(Username),
-CONSTRAINT ListNumber FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number), 
-CONSTRAINT RoleType FOREIGN KEY (Role_Type) REFERENCES User(Permissions)
+CONSTRAINT ListNumber FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number)
 );
 
 DROP TABLE IF EXISTS Professional;
@@ -104,8 +103,7 @@ List_Number INT NOT NULL,
 Role_Type VARCHAR(13) NOT NULL, 
 PRIMARY KEY(Username),
 CONSTRAINT Username3 FOREIGN KEY (Username) REFERENCES User(Username),
-CONSTRAINT ListNumber1 FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number),
-CONSTRAINT RoleType1 FOREIGN KEY (Role_Type) REFERENCES User(Permissions)
+CONSTRAINT ListNumber1 FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number)
 );
 
 DROP TABLE IF EXISTS StockEvent;
