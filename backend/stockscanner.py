@@ -93,6 +93,73 @@ def getuser(username):
     return jsonify({'username': userDetails})
 
 
+@app.route("/newuser", methods=['POST'])
+def newuser():
+    cur = mysql.connection.cursor()
+    json = request.json
+
+    new_Username = json['Username']
+    new_Password = json['Password']
+    new_Permissions = json['Permissions']
+
+    cur.execute("INSERT INTO USER(Username, Password, Permissions) VALUES(%s, %s, %s)",
+                (new_Username, new_Password, new_Permissions))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify("New User Created")
+
+# -----------Watchlist API Calls----------------------------
+@app.route("/watchlist/<string:list_number>", methods=['PUT', 'GET', 'DELETE'])
+def watchlist(list_number):
+
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_ID = json['ID']
+        new_Ranking = json['Ranking']
+
+        cur.execute("UPDATE WATCHLIST SET ID=%s, Ranking=%s WHERE list_number=%s",
+                    (new_ID, new_Ranking))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Watchlist updated successfully")
+
+    if request.method == 'GET':
+            cur = mysql.connection.cursor()
+            select_stmt = "SELECT * FROM WATCHLIST WHERE list_number = %s"
+            cur.execute(select_stmt, (list_number,))
+            listDetails = cur.fetchall()
+            return jsonify({'list_number': listDetails})
+
+    if request.method == 'DELETE':
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM WATCHLIST WHERE list_number = %s", ([list_number]))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Watchlist deleted successfully")
+
+@app.route("/newWatchlist", methods=['POST'])
+def newList():
+    cur = mysql.connection.cursor()
+    json = request.json
+
+    new_ID = json['ID']
+    new_List_Number = json['List_Number']
+    new_Ranking = json['Ranking']
+
+    cur.execute("INSERT INTO WATCHLIST(ID, List_Number, Ranking) VALUES(%s, %s, %s)",
+                (new_ID, new_List_Number, new_Ranking))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify("New Watchlist Created")
+
 # -----------Offering API Calls----------------------------
 @app.route("/offering", methods=['POST', 'GET'])
 def offering():
