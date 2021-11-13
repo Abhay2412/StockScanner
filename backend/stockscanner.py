@@ -121,7 +121,7 @@ def watchlist(list_number):
         new_Ranking = json['Ranking']
 
         cur.execute("UPDATE WATCHLIST SET ID=%s, Ranking=%s WHERE list_number=%s",
-                    (new_ID, new_Ranking))
+                    (new_ID, new_Ranking, list_number))
 
         mysql.connection.commit()
         cur.close()
