@@ -85,29 +85,12 @@ def offering():
       json = request.json
 
       new_ID = json['ID']
-      new_Company_ID = json['Company_ID']
-      new_Prediction_ID = json['Prediction_ID']
-      new_Predict_Stock_Price = json['Predict_Stock_Price']
-      new_Strong_Buy = json['Strong_Buy']
-      new_Rating_Buy = json['Rating_Buy']
-      new_Rating_Sell = json['Rating_Sell']
-      new_Strong_Sell = json['Strong_Sell']
-      new_Rating_Hold = json['Rating_Hold']
-      new_Stock_Price = json['Stock_Price']
-      new_Sector = json['Sector']
-      new_Address = json['Address']
-      new_Founding_Date = json['Founding_Date']
-      new_Business_Name = json['Business_Name']
 
       new_Offering_ID = json['Offering_ID']
       new_Quantity_of_stock = json['Quantity_of_stock']
       new_Price_offered_at = json['Price_offered_at']
       new_Status_Complete = json['Status_Complete']
       new_Status_Incomplete = json['Status_Incomplete']
-
-      cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-      cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-      cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
 
       cur.execute("INSERT INTO OFFERING(Offering_ID, ID, Quantity_of_stock, Price_offered_at, Status_Complete, Status_Incomplete) VALUES(%s, %s, %s, %s, %s, %s)", (new_Offering_ID, new_ID, new_Quantity_of_stock, new_Price_offered_at, new_Status_Complete, new_Status_Incomplete))
       
@@ -160,32 +143,8 @@ def belongsto():
       json = request.json
       
       new_ID = json['ID']
-      new_Company_ID = json['Company_ID']
-      new_Prediction_ID = json['Prediction_ID']
-      new_Predict_Stock_Price = json['Predict_Stock_Price']
-      new_Strong_Buy = json['Strong_Buy']
-      new_Rating_Buy = json['Rating_Buy']
-      new_Rating_Sell = json['Rating_Sell']
-      new_Strong_Sell = json['Strong_Sell']
-      new_Rating_Hold = json['Rating_Hold']
-      new_Stock_Price = json['Stock_Price']
-      new_Sector = json['Sector']
-      new_Address = json['Address']
-      new_Founding_Date = json['Founding_Date']
-      new_Business_Name = json['Business_Name']
-
-
       new_Name = json['Name']
-      new_Location = json['Location']
-      new_Number_of_Tickers = json['Number_of_Tickers']
-      
-      
-      cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-      cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-      cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
 
-      cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (new_Name, new_Location, new_Number_of_Tickers))
-      
       cur.execute("INSERT INTO BELONGSTO(ID, Name) VALUES(%s, %s)", (new_ID, new_Name))
 
       mysql.connection.commit()
@@ -309,27 +268,10 @@ def analyst():
       json = request.json
       
       new_ID = json['ID']
-      new_Company_ID = json['Company_ID']
-      new_Prediction_ID = json['Prediction_ID']
-      new_Predict_Stock_Price = json['Predict_Stock_Price']
-      new_Strong_Buy = json['Strong_Buy']
-      new_Rating_Buy = json['Rating_Buy']
-      new_Rating_Sell = json['Rating_Sell']
-      new_Strong_Sell = json['Strong_Sell']
-      new_Rating_Hold = json['Rating_Hold']
-      new_Stock_Price = json['Stock_Price']
-      new_Sector = json['Sector']
-      new_Address = json['Address']
-      new_Founding_Date = json['Founding_Date']
-      new_Business_Name = json['Business_Name']
       new_Analyst_ID_Number = json['Analyst_ID_Number']
       new_Name = json['Name']
       new_Company = json['Company']      
-      
-      cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-      cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-      cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
-      
+
       cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)", (new_Analyst_ID_Number, new_ID, new_Name, new_Company))
       
       mysql.connection.commit()
@@ -484,12 +426,7 @@ def stocks():
         new_Rating_Hold = json['Rating_Hold']
         new_Stock_Price = json['Stock_Price']
         new_Sector = json['Sector']
-        new_Address = json['Address']
-        new_Founding_Date = json['Founding_Date']
-        new_Business_Name = json['Business_Name']
-
-        cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-        cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
+        
         cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy, new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
         
         mysql.connection.commit()
