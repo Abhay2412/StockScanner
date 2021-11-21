@@ -34,7 +34,7 @@ app.config['SECRET_KEY'] = 'enPOzgeOGg8bczEFhpW9XB41j3Obd9tx'
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', title='Home', posts=posts)
+    return render_template('home.html', title='Home')
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -64,6 +64,10 @@ def login():
         else:
             flash('Login Failed. Please check your credentials again.', 'danger')
     return render_template('login.html', title='Login', form = form)
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
 
 if __name__ == '__main__':
     app.run(debug=True) #Run it here if the name equals name, also the debug ensures that any update made here will be 
