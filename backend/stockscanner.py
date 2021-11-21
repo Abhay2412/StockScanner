@@ -146,12 +146,20 @@ def watchlist(watchlist_ID):
 
         new_Stock_ID = json['Stock_ID']
 
-        cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-                    (new_Stock_ID, watchlist_ID))
-        mysql.connection.commit()
-        cur.close()
+        select_stmt = "SELECT * FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s "
+        cur.execute(select_stmt, (watchlist_ID, new_Stock_ID ))
+        msg = cur.fetchall()
 
-        return jsonify("Stock has been added to WatchList")
+        if msg:
+            return jsonify({new_Stock_ID: "is already in Watchlist"})
+
+        else:
+            cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+                        (new_Stock_ID, watchlist_ID))
+            mysql.connection.commit()
+            cur.close()
+
+            return jsonify({new_Stock_ID: "has been added to WatchList"})
 
     if request.method == 'GET':
             cur = mysql.connection.cursor()
@@ -166,12 +174,12 @@ def watchlist(watchlist_ID):
 
         new_Stock_ID = json['Stock_ID']
 
-        cur.execute("DELETE FROM CONTAIN WHERE Watchlist_ID = %s, Stock_ID=%s", ([watchlist_ID, new_Stock_ID]))
+        cur.execute("DELETE FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s", ([watchlist_ID, new_Stock_ID]))
 
         mysql.connection.commit()
         cur.close()
 
-        return jsonify("Watchlist deleted successfully")
+        return jsonify({new_Stock_ID:  "has been deleted successfully from your Watchlist"})
 
 @app.route("/newWatchlist", methods=['POST'])
 def newList():
