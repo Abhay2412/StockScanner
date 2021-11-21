@@ -75,16 +75,6 @@ def login():
 
 # ----------------------------------------Start of the API Calls------------------------------------------------------------
 # -----------USER API Calls----------------------------
-@app.route("/usersall", methods = ['GET'])
-def showusers():
-    cur = mysql.connection.cursor()
-    resultValue = cur.execute("SELECT * FROM USER")
-    if resultValue > 0:
-        userDetails = cur.fetchall()
-        return jsonify({'username': userDetails})
-
-    else: return jsonify("No Users In Data Base")
-
 
 @app.route("/user/<string:username>", methods = ['GET', 'PUT', 'DELETE'])
 def getuser(username):
@@ -100,14 +90,13 @@ def getuser(username):
         cur = mysql.connection.cursor()
         json = request.json
 
-        new_Permissions = json['Permissions']
         new_Password = json['Password']
-        cur.execute("UPDATE USER SET Permissions=%s, Password=%s WHERE Username=%s",
-                    (new_Permissions, new_Password, username))
+        cur.execute("UPDATE USER SET Password=%s WHERE Username=%s",
+                    (new_Password, username))
 
         mysql.connection.commit()
         cur.close()
-        return jsonify("Permissions updated successfully")
+        return jsonify("Password updated successfully")
 
     if request.method == 'DELETE':
         cur = mysql.connection.cursor()
@@ -134,7 +123,44 @@ def newuser():
     cur.close()
 
     return jsonify("New User Created")
+# -----------Admin API Calls----------------------------
+@app.route("/admin", methods=['PUT', 'GET', 'DELETE'])
+def admin():
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
 
+        new_Permissions = json['Permissions']
+        new_User = json['Username']
+
+        cur.execute("UPDATE USER SET Permissions=%s WHERE Username=%s",
+                    (new_Permissions, new_User))
+
+        mysql.connection.commit()
+        cur.close()
+        return jsonify("Permissions updated successfully")
+
+    if request.method == 'DELETE':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_User = json['Username']
+        if cur.execute("DELETE FROM USER WHERE Username = %s", ([new_User])):
+            mysql.connection.commit()
+            cur.close()
+            return jsonify("User deleted successfully")
+        else:
+            return jsonify("That User does not exist")
+
+@app.route("/admin/usersall", methods = ['GET'])
+def showusers():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM USER")
+    if resultValue > 0:
+        userDetails = cur.fetchall()
+        return jsonify({'username': userDetails})
+
+    else: return jsonify("No Users In Data Base")
 
 # -----------Watchlist API Calls----------------------------
 @app.route("/watchlist/<string:watchlist_ID>", methods=['POST', 'GET', 'DELETE'])
