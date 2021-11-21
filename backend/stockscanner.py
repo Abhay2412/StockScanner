@@ -75,7 +75,7 @@ def login():
 
 # ----------------------------------------Start of the API Calls------------------------------------------------------------
 # -----------USER API Calls----------------------------
-@app.route("/usersall")
+@app.route("/usersall", methods = ['GET'])
 def showusers():
     cur = mysql.connection.cursor()
     resultValue = cur.execute("SELECT * FROM USER")
@@ -83,18 +83,44 @@ def showusers():
         userDetails = cur.fetchall()
         return jsonify({'username': userDetails})
 
+    else: return jsonify("No Users In Data Base")
 
-@app.route("/user/<string:username>", methods = ['GET'])
+
+@app.route("/user/<string:username>", methods = ['GET', 'PUT', 'DELETE'])
 def getuser(username):
-    cur = mysql.connection.cursor()
-    select_stmt = "SELECT * FROM USER WHERE username = %s"
-    cur.execute(select_stmt, (username,))
-    userDetails = cur.fetchall()
-    return jsonify({'username': userDetails})
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        select_stmt = "SELECT * FROM USER WHERE username = %s"
+        if cur.execute(select_stmt, (username,)):
+            userDetails = cur.fetchall()
+            return jsonify({'username': userDetails})
+        else: return jsonify("That User does not exist")
 
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_Permissions = json['Permissions']
+        new_Password = json['Password']
+        cur.execute("UPDATE USER SET Permissions=%s, Password=%s WHERE Username=%s",
+                    (new_Permissions, new_Password, username))
+
+        mysql.connection.commit()
+        cur.close()
+        return jsonify("Permissions updated successfully")
+
+    if request.method == 'DELETE':
+        cur = mysql.connection.cursor()
+        if cur.execute("DELETE FROM USER WHERE Username = %s", ([username])):
+            mysql.connection.commit()
+            cur.close()
+            return jsonify("User deleted successfully")
+        else:
+            return jsonify("That User does not exist")
 
 @app.route("/newuser", methods=['POST'])
 def newuser():
+
     cur = mysql.connection.cursor()
     json = request.json
 
@@ -109,35 +135,38 @@ def newuser():
 
     return jsonify("New User Created")
 
-# -----------Watchlist API Calls----------------------------
-@app.route("/watchlist/<string:list_number>", methods=['PUT', 'GET', 'DELETE'])
-def watchlist(list_number):
 
-    if request.method == 'PUT':
+# -----------Watchlist API Calls----------------------------
+@app.route("/watchlist/<string:watchlist_ID>", methods=['POST', 'GET', 'DELETE'])
+def watchlist(watchlist_ID):
+
+    if request.method == 'POST':
         cur = mysql.connection.cursor()
         json = request.json
 
-        new_ID = json['ID']
-        new_Ranking = json['Ranking']
+        new_Stock_ID = json['Stock_ID']
 
-        cur.execute("UPDATE WATCHLIST SET ID=%s, Ranking=%s WHERE list_number=%s",
-                    (new_ID, new_Ranking, list_number))
-
+        cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+                    (new_Stock_ID, watchlist_ID))
         mysql.connection.commit()
         cur.close()
 
-        return jsonify("Watchlist updated successfully")
+        return jsonify("Stock has been added to WatchList")
 
     if request.method == 'GET':
             cur = mysql.connection.cursor()
-            select_stmt = "SELECT * FROM WATCHLIST WHERE list_number = %s"
-            cur.execute(select_stmt, (list_number,))
+            select_stmt = "SELECT * FROM CONTAIN WHERE Watchlist_ID = %s"
+            cur.execute(select_stmt, (watchlist_ID,))
             listDetails = cur.fetchall()
-            return jsonify({'list_number': listDetails})
+            return jsonify({'watchlist_ID': listDetails})
 
     if request.method == 'DELETE':
         cur = mysql.connection.cursor()
-        cur.execute("DELETE FROM WATCHLIST WHERE list_number = %s", ([list_number]))
+        json = request.json
+
+        new_Stock_ID = json['Stock_ID']
+
+        cur.execute("DELETE FROM CONTAIN WHERE Watchlist_ID = %s, Stock_ID=%s", ([watchlist_ID, new_Stock_ID]))
 
         mysql.connection.commit()
         cur.close()
@@ -149,12 +178,10 @@ def newList():
     cur = mysql.connection.cursor()
     json = request.json
 
-    new_ID = json['ID']
     new_List_Number = json['List_Number']
-    new_Ranking = json['Ranking']
 
-    cur.execute("INSERT INTO WATCHLIST(ID, List_Number, Ranking) VALUES(%s, %s, %s)",
-                (new_ID, new_List_Number, new_Ranking))
+    cur.execute("INSERT INTO WATCHLIST(List_Number) VALUES(%s)",
+                (new_List_Number))
     mysql.connection.commit()
     cur.close()
 
