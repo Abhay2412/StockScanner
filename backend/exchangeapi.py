@@ -60,7 +60,7 @@ def exchange():
         new_Location = json['Location']
         new_Number_of_Tickers = json['Number_of_Tickers']
 
-        cur.execute("UPDATE EXCHANGES SET Name=%s, Location=%s, Number_of_Tickers=%s WHERE Name=%s", (new_Name, new_Location, new_Number_of_Tickers, new_Name))
+        cur.execute("UPDATE EXCHANGES SET Name = %s, Location = %s, Number_of_Tickers = %s WHERE Name = %s", (new_Name, new_Location, new_Number_of_Tickers, new_Name))
         
         mysql.connection.commit()
         cur.close()

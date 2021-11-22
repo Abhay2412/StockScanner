@@ -1,6 +1,5 @@
 from flask import Flask, render_template, sessions, url_for, flash, redirect, request, jsonify, session
 from flask.helpers import make_response
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mysqldb import MySQL
 from analystapi import analyst_api
 from belongstoapi import belongsto_api

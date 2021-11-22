@@ -20,7 +20,7 @@ mysql = MySQL(app)
 app.config['SECRET_KEY'] = 'enPOzgeOGg8bczEFhpW9XB41j3Obd9tx'
 
 #-----------Offering API Calls----------------------------
-@offering_api.route("/offering", methods = ['POST', 'GET'])
+@offering_api.route("/offering", methods = ['POST', 'GET', 'PUT'])
 def offering():
     if request.method == 'POST':
       cur = mysql.connection.cursor()
@@ -54,6 +54,26 @@ def offering():
         cur.close()
         
         return respone
+    
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_ID = json['ID']
+
+        new_Offering_ID = json['Offering_ID']
+        new_Quantity_of_stock = json['Quantity_of_stock']
+        new_Price_offered_at = json['Price_offered_at']
+        new_Status_Complete = json['Status_Complete']
+        new_Status_Incomplete = json['Status_Incomplete'] 
+
+        cur.execute("UPDATE OFFERING SET Offering_ID=%s, ID = %s, Quantity_of_stock=%s, Price_offered_at=%s, Status_Complete=%s, Status_Incomplete=%s WHERE Offering_ID=%s", (new_Offering_ID, new_ID, new_Quantity_of_stock, new_Price_offered_at, new_Status_Complete, new_Status_Incomplete, new_Offering_ID))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("Offering updated successfully")
 
 @offering_api.route("/offering/<string:Offering_ID>", methods = ['DELETE'])
 def delete_offering(Offering_ID):

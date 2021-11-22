@@ -20,7 +20,7 @@ mysql = MySQL(app)
 app.config['SECRET_KEY'] = 'enPOzgeOGg8bczEFhpW9XB41j3Obd9tx'
 
 #-----------Belongs To API Calls--------------------------
-@belongsto_api.route("/belongsto", methods = ['POST', 'GET'])
+@belongsto_api.route("/belongsto", methods = ['POST', 'GET', 'PUT'])
 def belongsto():
     if request.method == 'POST':
       cur = mysql.connection.cursor()
@@ -49,6 +49,21 @@ def belongsto():
         cur.close()
         
         return respone
+
+    if request.method == 'PUT':
+
+        cur = mysql.connection.cursor()
+        json = request.json
+        
+        new_ID = json['ID']
+        new_Name = json['Name']
+
+        cur.execute("UPDATE BELONGSTO SET ID = %s, Name = %s Where ID = %s", (new_ID, new_Name, new_ID))
+        
+        mysql.connection.commit()
+        cur.close()
+        
+        return jsonify("BelongsTo updated successfully")
 
 @belongsto_api.route("/belongsto/<string:ID>", methods = ['DELETE'])
 def delete_belongsto(ID):
