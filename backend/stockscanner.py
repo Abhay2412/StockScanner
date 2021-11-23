@@ -76,7 +76,7 @@ def login():
                 session['loggedin'] = True
                 session['username'] = singleUser[0]
                 flash('You have been logged in!', 'success')
-                return redirect(url_for('profile'))                
+                return redirect(url_for('showStocks'))                
             else:
                 flash('Login Failed. Please check your credentials again.', 'danger')
     return render_template('login.html', title='Login', form = form)
@@ -87,9 +87,13 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-@app.route('/profile')
-def profile():
-    return render_template('profile.html', username = session['username'])
+@app.route('/showStocks')
+def showStocks():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM STOCK")
+    if resultValue > 0:
+        stockDetails = cur.fetchall()
+        return render_template('showStocks.html', username = session['username'], stockDetails=stockDetails)
 
 if __name__ == '__main__':
     app.run(debug=True) #Run it here if the name equals name, also the debug ensures that any update made here will be 

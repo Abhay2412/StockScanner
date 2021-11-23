@@ -90,4 +90,4 @@ def get_business(Business_ID):
     mysql.connection.commit()
     cur.close()
         
-    return jsonify({'Stock': specific_business_details})
+    return jsonify({'Business': specific_business_details})
