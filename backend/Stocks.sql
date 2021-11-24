@@ -21,7 +21,7 @@ DROP TABLE IF EXISTS User;
 CREATE TABLE User (
 Username VARCHAR(16) NOT NULL,
 Password VARCHAR(25) NOT NULL,
-Permissions VARCHAR(16) NOT NULL, 
+Permissions VARCHAR(255) NOT NULL, 
 PRIMARY KEY(Username)
 );
 
@@ -79,11 +79,16 @@ CONSTRAINT Username1 FOREIGN KEY (Username) REFERENCES User(Username)
 
 DROP TABLE IF EXISTS Watchlist;
 CREATE TABLE Watchlist (
-ID VARCHAR(12) NOT NULL,
 List_Number INT NOT NULL,
-Ranking VARCHAR(25) NOT NULL,
-PRIMARY KEY(List_Number),
-CONSTRAINT ID2 FOREIGN KEY (ID) REFERENCES Stock(ID)
+PRIMARY KEY(List_Number)
+);
+
+DROP TABLE IF EXISTS Contain;
+CREATE TABLE Contain (
+Watchlist_ID INT NOT NULL,
+Stock_ID VARCHAR(12) NOT NULL,
+CONSTRAINT WID FOREIGN KEY (Watchlist_ID) REFERENCES Watchlist(List_Number),
+CONSTRAINT SID FOREIGN KEY (Stock_ID) REFERENCES Stock(ID)
 );
 
 DROP TABLE IF EXISTS Private;
@@ -93,8 +98,7 @@ List_Number INT NOT NULL,
 Role_Type VARCHAR(13) NOT NULL, 
 PRIMARY KEY(Username),
 CONSTRAINT Username2 FOREIGN KEY (Username) REFERENCES User(Username),
-CONSTRAINT ListNumber FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number), 
-CONSTRAINT RoleType FOREIGN KEY (Role_Type) REFERENCES User(Permissions)
+CONSTRAINT ListNumber FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number)
 );
 
 DROP TABLE IF EXISTS Professional;
@@ -104,8 +108,7 @@ List_Number INT NOT NULL,
 Role_Type VARCHAR(13) NOT NULL, 
 PRIMARY KEY(Username),
 CONSTRAINT Username3 FOREIGN KEY (Username) REFERENCES User(Username),
-CONSTRAINT ListNumber1 FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number),
-CONSTRAINT RoleType1 FOREIGN KEY (Role_Type) REFERENCES User(Permissions)
+CONSTRAINT ListNumber1 FOREIGN KEY (List_Number) REFERENCES Watchlist(List_Number)
 );
 
 DROP TABLE IF EXISTS StockEvent;
