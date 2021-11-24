@@ -1,4 +1,80 @@
-{% extends "loginedview.html" %} 
+{% extends "loginedview.html" %}
 {% block content %}
-<p>Stock Details</p>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stockInformation.css') }}">
+    <c
+    <div class="card-group">
+        <div class="card">
+            <img class="card-img-top" src="/static/AAPL.png" alt="Card image cap">
+        </div>
+
+        <div id="Stocks">
+  <span class="Symbol">
+    <b class="Stat"><i data-replace='Symbol'>Tech</i>:<i data-replace='StockExchange'> APPL</i></b>
+    <b class="Label">( <i data-replace='Name'>Apple Inc</i> )</b>
+  </span>
+            <span class="Price"><b class="Label">Current Price</b> <b class="Stat">$<i
+                    data-replace='BidRealtime'></i></b></span>
+            <span class="High52"><b class="Label">52 Week High: $161.80 </b> <b class="Stat"><i
+                    data-replace='High'></i></b> <b
+                    class="Stat">(<i data-replace=''></i>)</b></span>
+            <span class="Low52"><b class="Label">52 Week Low: $159.06 </b> <b class="Stat"><i
+                    data-replace='Low'></i></b> <b
+                    class="Stat">(<i data-replace=''></i>)</b></span>
+        </div>
+
+        <section class="recentNews">
+            <div class="container">
+                <h2 class="news-title">Recent News</h2>
+                <div class="row">
+                    <div class="ct-blog col-sm-6 col-md-4">
+                        <div class="inner">
+                            <div class="fauxcrop">
+
+                            </div>
+                            <div class="ct-blog-content">
+                                <div class="ct-blog-date">
+                                    <span>March</span><strong>1</strong>
+                                </div>
+                                <h3 class="ct-blog-header">
+                                    Apple Will Be Visiting a Number of Upcoming Conferences
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ct-blog col-sm-6 col-md-4">
+                        <div class="inner">
+                            <div class="fauxcrop">
+                            </div>
+                            <div class="ct-blog-content">
+                                <div class="ct-blog-date">
+                                    <span>February</span><strong>27</strong>
+                                </div>
+                                <h3 class="ct-blog-header">
+                                    Apple Has Been Named to Inc. 5000
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ct-blog col-sm-6 col-md-4">
+                        <div class="inner">
+                            <div class="fauxcrop">
+                            </div>
+                            <div class="ct-blog-content">
+                                <div class="ct-blog-date">
+                                    <span>February</span><strong>25</strong>
+                                </div>
+                                <h3 class="ct-blog-header">
+                                    Apple Released New iPhone
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    </h3>
+                </div>
+            </div>
+        </section>
+
+
 {% endblock %}
