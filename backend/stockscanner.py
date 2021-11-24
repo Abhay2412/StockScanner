@@ -93,8 +93,27 @@ def showStocks():
     resultValue = cur.execute("SELECT * FROM STOCK")
     if resultValue > 0:
         stockDetails = cur.fetchall()
-        return render_template('showStocks.html', username = session['username'], stockDetails=stockDetails)
+        return render_template('showStocks.html',  username = session['username'], stockDetails=stockDetails)
 
+@app.route('/stockInformation')
+def showStockInformation():
+    return render_template('stockInformation.html', username = session['username'])
+
+@app.route('/watchlistDetails')
+def showWatchlist():
+    return render_template('watchlist.html', username = session['username'])
+
+@app.route('/eventDetails')
+def showEvents():
+    return render_template('event.html', username = session['username'])
+
+@app.route('/prDetails')
+def showPR():
+    return render_template('pr.html', username = session['username'])
+
+@app.route('/week52Details')
+def showWeek52():
+    return render_template('week52.html', username = session['username'])
 if __name__ == '__main__':
     app.run(debug=True) #Run it here if the name equals name, also the debug ensures that any update made here will be 
     #changed here immediately onto the server 
