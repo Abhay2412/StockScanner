@@ -1,4 +1,66 @@
 {% extends "loginedview.html" %} 
 {% block content %}
-<p>week52 details in here</p>
+<html>
+<head>
+<style>
+#stocks {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  color: white;
+}
+
+#stocks td, #stocks th {
+  border: 1px solid rgb(221, 221, 221);
+  padding: 8px;
+}
+a{
+    color: rgb(42, 24, 209);
+}
+
+#stocks tr:nth-child(even){background-color: #db8f5d;}
+
+#stocks tr:hover {background-color: rgb(252, 137, 85);}
+
+#stocks th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #3e1870;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<h1>52 Week Table</h1>
+
+<table id="stocks">
+  <tr>
+    <th>Business</th>
+    <th>High($)</th>
+    <th>Low($)</th>
+    <th>Predict High/Low($)</th>
+  </tr>
+  <tr>
+    <td><a href="https://finance.yahoo.com/quote/AAPL/">AAPL</a></td>
+    <td style="background-color:#389244">161.02</td>
+    <td style="background-color:#bb5d5d">112.59</td>
+    <td style="background-color:#389244">125.03</td>
+  </tr>
+  <tr>
+    <td><a href="https://finance.yahoo.com/quote/MSFT/">MSFT</a></td>
+    <td style="background-color:#389244">349.67</td>
+    <td style="background-color:#bb5d5d">209.11</td>
+    <td style="background-color:#389244">360.52</td>
+  </tr>
+  <tr>
+    <td><a href="https://finance.yahoo.com/quote/TSLA/">TSLA</a></td>
+    <td style="background-color:#389244">1,243.49</td>
+    <td style="background-color:#bb5d5d">539.49</td>
+    <td style="background-color:#389244">1250.85</td>
+  </tr>
+</table>
+</body>
+</html>
 {% endblock %}
