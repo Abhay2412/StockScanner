@@ -52,6 +52,9 @@ body {
 
 .no-js #Stocks { display: none; }
 
+.arow{
+    text-align:center;
+}
 .recentNews {
     background-color: steelblue;
 }
