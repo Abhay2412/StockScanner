@@ -95,9 +95,15 @@ def showStocks():
         stockDetails = cur.fetchall()
         return render_template('showStocks.html',  username = session['username'], stockDetails=stockDetails)
 
-@app.route('/stockInformation')
-def showStockInformation():
-    return render_template('stockInformation.html', username = session['username'])
+@app.route("/stockInformation/<string:ID>", methods=['GET', 'POST'])
+def showStockInformation(ID):
+
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
+    if resultValue > 0:
+        stockDetails = cur.fetchone()
+
+    return render_template('stockInformation.html', username = session['username'], stockDetails=stockDetails)
 
 @app.route('/watchlistDetails')
 def showWatchlist():
