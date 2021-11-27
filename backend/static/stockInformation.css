@@ -45,11 +45,19 @@ body {
 
 #Stocks span {
   white-space: nowrap;
-  display: inline-block;
+  display: block;
   padding: 0 5px;
-}
+    text-align: left;
+    padding-left: 240px;
 
-#Stocks .Symbol,
+    white-space:nowrap;
+}​
+
+#Stocks .Symbol
+#Stocks .Stockitem{
+    background: #3B666B;
+ }
+
 #Stocks .Stat { color: white; }
 
 .no-js #Stocks { display: none; }

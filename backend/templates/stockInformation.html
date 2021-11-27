@@ -2,82 +2,80 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stockInformation.css') }}">
-    <c
-    <div class="card-group">
+
+    <section class="card-group">
         <div class="card">
             <img class="card-img-top" src="/static/AAPL.png" alt="Card image cap">
-            <a href="{{ url_for('showWatchlist')}}" class="btn btn-primary">Add This Stock to Watchlist</a>
-        </div>
+            <a href="{{ url_for('showWatchlist') }}" class="btn btn-primary">Add This Stock to Watchlist</a>
+        </div></br>
+    </section>
 
         <div id="Stocks">
-  <span class="Symbol">
-    <p class="Stat"><i data-replace='Symbol'>{{ stockDetails[10]}}</i> : {{ stockDetails[0]}}</p>
-  </span>
-            <span class="Price"><p class="Label">Current Price: $ {{ stockDetails[9]}}</p></span>
-            <span class="High52"><b class="Label">52 Week High: $161.80 </b> <b class="Stat"><i data-replace='High'></i></b> <b
-                    class="Stat">(<i data-replace=''></i>)</b></span>
-            <span class="Low52"><b class="Label">52 Week Low: $159.06 </b> <b class="Stat"><i data-replace='Low'></i></b> <b
-                    class="Stat">(<i data-replace=''></i>)</b></span>
-            <div class="arow">
-            <span class="analyst"><b class="Label">Analyst: NAME </b> <b class="Stat"><i data-replace='analyst'></i></b> <b
-                    class="Stat"><i data-replace=''></i></b></span>
-            </div>
+            <span class="Symbol"><p class="Label">{{ stockDetails[10] }}: {{ stockDetails[0] }} </p><br/></span>
+            <span class="Stockitem"><p class="Label">Current Price: ${{ stockDetails[9] }} USD </p></span>
+            <span class="Stockitem"><p class="Label">Predicted Stock Price: ${{ stockDetails[3] }} USD</p></span>
+            <span class="Stockitem"><p class="Label">Strong Buy: ${{ stockDetails[4] }} USD</p></span>
+            <span class="Stockitem"><p class="Label">Strong Sell: ${{ stockDetails[7] }} USD</p></span>
+            <span class="Stockitem"><p class="Label">Rating Buy: ${{ stockDetails[5] }} USD</p></span>
+            <span class="Stockitem"><p class="Label">Rating Sell: ${{ stockDetails[6] }} USD</p></span>
+            <span class="Stockitem"><p class="Label">Rating Hold: ${{ stockDetails[8] }} USD</p></span></br>
+            <span class="analyst"><p class="Label">Analyst: NAME </p></span>
         </div>
 
-        <section class="recentNews">
-            <div class="container">
-                <h2 class="news-title">Recent News</h2>
-                <div class="row">
-                    <div class="ct-blog col-sm-6 col-md-4">
-                        <div class="inner">
-                            <div class="fauxcrop">
 
-                            </div>
-                            <div class="ct-blog-content">
-                                <div class="ct-blog-date">
-                                    <span>November</span><strong>27</strong>
-                                </div>
-                                <h3 class="ct-blog-header">
-                                    <a href="https://www.washingtonpost.com/technology/2021/11/26/ios-privacy-settings/">Apple iOS privacy settings to change now</a>
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ct-blog col-sm-6 col-md-4">
-                        <div class="inner">
-                            <div class="fauxcrop">
-                            </div>
-                            <div class="ct-blog-content">
-                                <div class="ct-blog-date">
-                                    <span>November</span><strong>27</strong>
-                                </div>
-                                <h3 class="ct-blog-header">
-                                    <a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/">
-                                        Apple sues NSO Group to curb the abuse of state-sponsored spyware </a>
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ct-blog col-sm-6 col-md-4">
-                        <div class="inner">
-                            <div class="fauxcrop">
-                            </div>
-                            <div class="ct-blog-content">
-                                <div class="ct-blog-date">
-                                    <span>November</span><strong>27</strong>
-                                </div>
-                                <h3 class="ct-blog-header">
-                                    <a href="https://www.fool.com/investing/2021/11/26/why-apple-stock-got-bit-today/">
-                                        Why Apple Stock Got Bit Today </a>
-                                </h3>
-                            </div>
-                        </div>
-                    </div>
+    <section class="recentNews">
+        <div class="container">
+            <h2 class="news-title">Recent News</h2>
+            <div class="row">
+                <div class="ct-blog col-sm-6 col-md-4">
+                    <div class="inner">
+                        <div class="fauxcrop">
 
-                    </h3>
+                        </div>
+                        <div class="ct-blog-content">
+                            <div class="ct-blog-date">
+                                <span>November</span><strong>27</strong>
+                            </div>
+                            <h3 class="ct-blog-header">
+                                <a href="https://www.washingtonpost.com/technology/2021/11/26/ios-privacy-settings/">Apple
+                                    iOS privacy settings to change now</a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="ct-blog col-sm-6 col-md-4">
+                    <div class="inner">
+                        <div class="fauxcrop">
+                        </div>
+                        <div class="ct-blog-content">
+                            <div class="ct-blog-date">
+                                <span>November</span><strong>27</strong>
+                            </div>
+                            <h3 class="ct-blog-header">
+                                <a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/">
+                                    Apple sues NSO Group to curb the abuse of state-sponsored spyware </a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="ct-blog col-sm-6 col-md-4">
+                    <div class="inner">
+                        <div class="fauxcrop">
+                        </div>
+                        <div class="ct-blog-content">
+                            <div class="ct-blog-date">
+                                <span>November</span><strong>27</strong>
+                            </div>
+                            <h3 class="ct-blog-header">
+                                <a href="https://www.fool.com/investing/2021/11/26/why-apple-stock-got-bit-today/">
+                                    Why Apple Stock Got Bit Today </a>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
 
 {% endblock %}
