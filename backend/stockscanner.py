@@ -97,7 +97,6 @@ def showStocks():
 
 @app.route("/stockInformation/<string:ID>", methods=['GET', 'POST'])
 def showStockInformation(ID):
-
     cur = mysql.connection.cursor()
     resultValue = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
     if resultValue > 0:
