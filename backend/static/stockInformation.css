@@ -17,7 +17,9 @@ body {
 }
 .card{
   align-items: center;
+    padding-bottom: 20px;
 }
+
 
 #Stocks {
   display: block;
@@ -25,11 +27,11 @@ body {
   background: steelblue;
   color: white;
   padding: 20px;
+    cursor: default;
   vertical-align: middle;
   line-height: 1.4;
   text-align: center;
   transform: translateZ(0);
-  cursor: pointer;
   font-size: 30px;
   font-family: "Roboto", Helvetica;
 }
@@ -43,11 +45,19 @@ body {
 
 #Stocks span {
   white-space: nowrap;
-  display: inline-block;
+  display: block;
   padding: 0 5px;
-}
+    text-align: left;
+    padding-left: 240px;
 
-#Stocks .Symbol,
+    white-space:nowrap;
+}​
+
+#Stocks .Symbol
+#Stocks .Stockitem{
+    background: #3B666B;
+ }
+
 #Stocks .Stat { color: white; }
 
 .no-js #Stocks { display: none; }
@@ -64,6 +74,7 @@ body {
     padding-bottom:30px;
     font-family: 'nimbus-sans-condensed', sans-serif;
     font-size:35px;
+    font-weight: bold;
     color: #fff;
 }
 .recentNews .row {
@@ -99,6 +110,9 @@ body {
 .ct-blog-content .ct-blog-date strong {
     font-size: 25px;
     color: rgb(20, 117, 175);
+}
+a {
+  color: black;
 }
 .ct-blog-content .ct-blog-header {
     color: #000;
