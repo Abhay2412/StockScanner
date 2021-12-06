@@ -116,7 +116,6 @@ def showStockInformation(ID):
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails)
 
     if request.method == 'POST':
-        #if request.form['postStock'] == 'StockID':
             cur = mysql.connection.cursor()
             new_User = session['username']
             select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
@@ -124,7 +123,7 @@ def showStockInformation(ID):
             listDetails = cur.fetchall()
             newWatchlist = listDetails
 
-            newStockID = request.form.get('StockID')
+            newStockID = ID
 
             cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
                         (newStockID, newWatchlist))
@@ -144,11 +143,8 @@ def showWatchlist():
 
     newWatchlist = listDetails
 
-    allListDetails=listDetails
-
-    resultValue = cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
-    if resultValue > 0:
-        allListDetails = cur.fetchall()
+    cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
+    allListDetails = cur.fetchall()
 
     return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails)
 
