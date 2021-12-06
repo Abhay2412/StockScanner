@@ -1,7 +1,10 @@
 {% extends "loginedview.html" %} 
 {% block content %}
-<p>{{ username }}'s Watchlist Details</p>
-    <span> Click on stock to see more information </span>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'watchlistDetails.css') }}">
+
+<h1>{{ username }}'s Watchlist Details</h1> <br/>
+    <p> Click on stock to see more information </p>
     <table>
     <thead>
     <tr>
