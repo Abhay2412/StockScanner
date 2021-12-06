@@ -109,27 +109,26 @@ def showStocks():
 def showStockInformation(ID):
     if request.method == 'GET':
         cur = mysql.connection.cursor()
-        resultValue = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
-        if resultValue > 0:
-            stockDetails = cur.fetchone()
+        cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
+        stockDetails = cur.fetchone()
 
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails)
 
     if request.method == 'POST':
-            cur = mysql.connection.cursor()
-            new_User = session['username']
-            select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-            cur.execute(select_stmt, (new_User,))
-            listDetails = cur.fetchall()
-            newWatchlist = listDetails
+        cur = mysql.connection.cursor()
+        new_User = session['username']
+        select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
+        cur.execute(select_stmt, (new_User,))
+        listDetails = cur.fetchall()
+        newWatchlist = listDetails
 
-            newStockID = ID
+        newStockID = ID
 
-            cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-                        (newStockID, newWatchlist))
-            mysql.connection.commit()
-            cur.close()
-            return redirect(url_for('watchlistDetails'))
+        cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+                    (newStockID, newWatchlist))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('watchlistDetails'))
 
 
 @app.route('/watchlistDetails', methods=['GET'])
@@ -140,7 +139,6 @@ def showWatchlist():
     select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
     cur.execute(select_stmt, (new_User,))
     listDetails = cur.fetchall()
-
     newWatchlist = listDetails
 
     cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))

@@ -2,7 +2,7 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stockInformation.css') }}">
-
+{% if stockDetails %}
     <section class="card-group">
         <div class="card">
             <img class="card-img-top" src="/static/{{ stockDetails[1] }}.png" alt="Card image cap">
@@ -79,6 +79,9 @@
             </div>
         </div>
     </section>
+{% else %}
+    <span class="NoStock"><p class="Label"> This Stock Does Not Exist, Please contact Admin to add Stock</p></span>
 
+{% endif %}
 
 {% endblock %}
