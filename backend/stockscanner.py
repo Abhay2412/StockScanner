@@ -118,13 +118,12 @@ def showStockInformation(ID):
     if request.method == 'POST':
         #if request.form['postStock'] == 'StockID':
             cur = mysql.connection.cursor()
-            json = request.json
-            new_User = json[session['username']]
+            new_User = session['username']
             select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
             cur.execute(select_stmt, (new_User,))
             listDetails = cur.fetchall()
+            newWatchlist = listDetails
 
-            newWatchlist = listDetails[0]
             newStockID = request.form.get('StockID')
 
             cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
