@@ -1,4 +1,20 @@
 {% extends "loginedview.html" %} 
 {% block content %}
-<p>Watchlist Details</p>
+<p>{{ username }}'s Watchlist Details</p>
+    <span> Click on stock to see more information </span>
+    <table>
+    <thead>
+    <tr>
+        <th>Stock ID</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in allListDetails %}
+<tr>
+    <td> <a href="{{ url_for('showStockInformation', ID = item[1]) }}">{{item[1]}}</a></td>
+</tr>
+{% endfor %}
+     </tbody>
+</table>
+
 {% endblock %}

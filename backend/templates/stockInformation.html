@@ -6,7 +6,11 @@
     <section class="card-group">
         <div class="card">
             <img class="card-img-top" src="/static/AAPL.png" alt="Card image cap">
-            <a href="{{ url_for('showWatchlist') }}" class="btn btn-primary">Add This Stock to Watchlist</a>
+            Click To add Stock to Your Watchlist
+            <form method="post" action="/">
+                <input type="submit" class="btn btn-primary" value={{ stockDetails[0] }} name="postStock"/>
+            </form>
+
         </div></br>
     </section>
 
