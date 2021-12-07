@@ -48,7 +48,7 @@ def register():
             userDetails = request.form
             username = userDetails['username']
             password = userDetails['password']
-            permissions = 'testuser'
+            permissions = request.form['user_type']
             cur = mysql.connection.cursor()
             cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
                         (username, password, permissions))
