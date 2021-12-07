@@ -111,8 +111,12 @@ def showStockInformation(ID):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
         stockDetails = cur.fetchone()
+        newPID = stockDetails[2]
 
-        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails)
+        cur.execute("SELECT * FROM PR WHERE P_ID = %s", ([newPID]))
+        prDetails = cur.fetchall()
+
+        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails, prDetails=prDetails)
 
     if request.method == 'POST':
         cur = mysql.connection.cursor()
