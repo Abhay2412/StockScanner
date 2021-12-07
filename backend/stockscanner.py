@@ -145,9 +145,13 @@ def showWatchlist():
     listDetails = cur.fetchall()
     newWatchlist = listDetails
 
+    #if listDetail < 0 then scan PRIVATE
+
+    #newWatchlist > 0 scan for watchlist
     cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
     allListDetails = cur.fetchall()
 
+    # add listDetails to render then make an if statment to check if it exists  if not "contact admin to make watchlist"
     return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails)
 
 
