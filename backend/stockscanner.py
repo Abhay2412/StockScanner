@@ -75,6 +75,17 @@ def login():
         if request.method == 'POST':
             usernameForm = request.form.get('username')
             passwordForm = request.form.get('password')
+            userAdmin = "Admin"
+            
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * FROM USER Where Username = %s And Password = %s And Permissions= %s", (usernameForm, passwordForm, userAdmin))
+            singleUser = cur.fetchone()
+            if singleUser and userAdmin == 'Admin':
+                session['loggedin'] = True
+                session['username'] = singleUser[0]
+                flash('You have been logged in!', 'success')
+                return redirect(url_for('showAdminView'))
+
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM USER Where Username = %s And Password = %s", (usernameForm, passwordForm))
             singleUser = cur.fetchone()
@@ -85,6 +96,8 @@ def login():
                 return redirect(url_for('showStocks'))
             else:
                 flash('Login Failed. Please check your credentials again.', 'danger')
+
+
     return render_template('login.html', title='Login', form=form)
 
 
@@ -93,6 +106,10 @@ def logout():
     session.pop('loggedin', None)
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/showAdminView')
+def showAdminView():
+    return render_template('showAdminView.html', username=session['username'])
 
 
 @app.route('/showStocks')
