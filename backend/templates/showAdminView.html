@@ -1,11 +1,12 @@
 {% extends "loginAdminView.html" %} {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='adminView.css') }}">
   <body>
+    <p>Welcome to the Admin View, here you can control the system to your liking.</p>
     <h4>Users</h4>
     <div class="btn-group" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-secondary">Create a User</button>
-      <button type="button" class="btn btn-secondary">Delete a User</button>
-      <button type="button" class="btn btn-secondary">Update a User</button>
+      <button type="button" id="createUserButton" class="btn btn-secondary">Create a User</button>
+      <button type="button" id="deleteUserButton" class="btn btn-secondary">Delete a User</button>
+      <button type="button" id="updateUserButton" class="btn btn-secondary">Update a User</button>
       <button type="button" id="showAllUserButton" class="btn btn-secondary">Show all Users</button>
     </div>
     
