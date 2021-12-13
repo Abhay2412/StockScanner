@@ -1,4 +1,5 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "loginAdminView.html" %} {% block content %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='adminView.css') }}">
 <table class="table table-dark">
     <thead>
         <tr>
@@ -15,4 +16,6 @@
       </tr>
       {% endfor %}
   </table>
+  <button type="button" id="backtoAdminButton" class="btn btn-secondary">Back to Admin Page</button>
+  <script src="{{ url_for('static', filename='usersShow.js') }}"></script>
 {% endblock content %}
