@@ -113,7 +113,7 @@ def login():
             usernameForm = request.form.get('username')
             passwordForm = request.form.get('password')
             userAdmin = "Admin"
-            
+
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM USER Where Username = %s And Password = %s And Permissions= %s", (usernameForm, passwordForm, userAdmin))
             singleUser = cur.fetchone()
@@ -178,7 +178,7 @@ def deleteUserAdmin():
             if(existsStatus == 0):
                 flash(f'Account cannot be deleted for {form.username.data} since it does not exist!', 'danger')
                 return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
-            else: 
+            else:
                 cur.execute("DELETE FROM USER WHERE USERNAME = %s", ([username]))
                 mysql.connection.commit()
                 cur.close()
@@ -200,7 +200,7 @@ def updateUserAdmin():
             if(existStatus == 0):
                 flash(f'Account cannot be updated for {form.username.data} since it does not exist!', 'danger')
                 return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
-            else: 
+            else:
                 cur.execute("UPDATE USER SET username = %s, password = %s, permissions = %s WHERE username = %s", (username, password, permissions, username))
                 mysql.connection.commit()
                 cur.close()
@@ -225,44 +225,79 @@ def showStockInformation(ID):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
         stockDetails = cur.fetchone()
-        newPID = stockDetails[2]
 
-        cur.execute("SELECT * FROM PR WHERE P_ID = %s", ([newPID]))
-        prDetails = cur.fetchall()
+        resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
+        if resultValue > 0:
+            dateDetails = cur.fetchall()
+        else:
+            dateDetails = resultValue
 
-        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails, prDetails=prDetails)
+        resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
+        if resultValue > 0:
+            sDetails = cur.fetchone()
+            newPID = sDetails[2]
+            cur.execute("SELECT * FROM PR WHERE P_ID = %s", ([newPID]))
+            prDetails = cur.fetchall()
 
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        new_User = session['username']
-        select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-        cur.execute(select_stmt, (new_User,))
+        else: prDetails = resultValue
+
+        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,dateDetails=dateDetails, prDetails=prDetails)
+
+    # if request.method == 'POST':
+    #
+    #     cur = mysql.connection.cursor()
+    #     new_User = session['username']
+    #     select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
+    #     cur.execute(select_stmt, (new_User,))
+    #     listDetails = cur.fetchone()
+    #     newWatchlist = listDetails
+    #
+    #     cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+    #                 (ID, newWatchlist))
+    #     mysql.connection.commit()
+    #     cur.close()
+    #     return redirect(url_for('watchlistDetails'))
+
+
+@app.route('/watchlistDetails', methods=['GET', 'POST'])
+def showWatchlist():
+
+    cur = mysql.connection.cursor()
+    new_User = session['username']
+
+    select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
+    resultValue = cur.execute(select_stmt, (new_User,))
+    if resultValue > 0:
         listDetails = cur.fetchall()
         newWatchlist = listDetails
 
-        newStockID = ID
+    #if listDetail < 0 then scan PRIVATE
+    if resultValue <= 0:
+        select_stmt = "SELECT List_Number FROM PROFESSIONAL WHERE Username = %s"
+        resultValue = cur.execute(select_stmt, (new_User,))
+        if resultValue > 0:
+            listDetails = cur.fetchall()
+            newWatchlist = listDetails
 
-        cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-                    (newStockID, newWatchlist))
-        mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('watchlistDetails'))
+    #newWatchlist > 0 scan for watchlist
+    if resultValue > 0:
+        if request.method == 'POST':
+            post_id = request.form.get('postStock')
+            select_stmt = "SELECT * FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s "
+            cur.execute(select_stmt, (newWatchlist, post_id))
+            msg = cur.fetchall()
+            if not msg:
+                cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+                            (post_id, newWatchlist))
+                mysql.connection.commit()
 
+        cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
+        allListDetails = cur.fetchall()
 
-@app.route('/watchlistDetails', methods=['GET'])
-def showWatchlist():
-    cur = mysql.connection.cursor()
-    json = request.json
-    new_User = session['username']
-    select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-    cur.execute(select_stmt, (new_User,))
-    listDetails = cur.fetchall()
-    newWatchlist = listDetails
+    else: allListDetails = resultValue
 
-    cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
-    allListDetails = cur.fetchall()
-
-    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails)
+    # add listDetails to render then make an if statment to check if it exists  if not "contact admin to make watchlist"
+    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails, resultValue=resultValue)
 
 
 @app.route('/eventDetails')

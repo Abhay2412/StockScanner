@@ -127,4 +127,20 @@ a {
     padding: 0 20px;
     vertical-align: top;
 }
+.ct-blog-header-noNews {
+    color: #000;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 2;
+    vertical-align: top;
+    horiz-align: center; !important;
+}
+.ct-blog .inner-noNews {
+    background-color: #FFF;
+    padding: 10px;
+    height: 100%;
+    horiz-align: center;
+}
+
 
