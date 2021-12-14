@@ -192,6 +192,8 @@ def showStockInformation(ID):
         resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
         if resultValue > 0:
             dateDetails = cur.fetchall()
+        else:
+            dateDetails = resultValue
 
         resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
         if resultValue > 0:
