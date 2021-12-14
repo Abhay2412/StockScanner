@@ -239,7 +239,7 @@ def showWatchlist():
     else: allListDetails = resultValue
 
     # add listDetails to render then make an if statment to check if it exists  if not "contact admin to make watchlist"
-    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails)
+    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails, resultValue=resultValue)
 
 
 @app.route('/eventDetails')
