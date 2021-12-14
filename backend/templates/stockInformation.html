@@ -2,17 +2,19 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stockInformation.css') }}">
-{% if stockDetails %}
-    <section class="card-group">
-        <div class="card">
-            <img class="card-img-top" src="/static/{{ stockDetails[1] }}.png" alt="Card image cap">
-            <form method="post" action="/">
+    {% if stockDetails %}
+        <section class="card-group">
+            <div class="card">
+                <img class="card-img-top" src="/static/{{ stockDetails[1] }}.png" alt="Card image cap">
+                <form method="post" action="/">
 
-                <input type="submit" class="btn btn-primary" value="Click To add Stock to Your Watchlist" name="postStock"/>
-            </form>
+                    <input type="submit" class="btn btn-primary" value="Click To add Stock to Your Watchlist"
+                           name="postStock"/>
+                </form>
 
-        </div></br>
-    </section>
+            </div>
+            </br>
+        </section>
 
         <div id="Stocks">
             <span class="Symbol"><p class="Label">{{ stockDetails[10] }}: {{ stockDetails[0] }} </p><br/></span>
@@ -26,62 +28,76 @@
         </div>
 
 
-    <section class="recentNews">
-        <div class="container">
-            <h2 class="news-title">Recent News</h2>
-            <div class="row">
-                <div class="ct-blog col-sm-6 col-md-4">
-                    <div class="inner">
-                        <div class="fauxcrop">
+        <section class="recentNews">
+            {% if prDetails %}
+                <div class="container">
+                    <h2 class="news-title">Recent News</h2>
+                    <div class="row">
+                        <div class="ct-blog col-sm-6 col-md-4">
+                            <div class="inner">
+                                <div class="fauxcrop">
+
+
+                                </div>
+                                <div class="ct-blog-content">
+                                    <div class="ct-blog-date">
+                                        <span>November</span><strong>27</strong>
+                                    </div>
+                                    <h3 class="ct-blog-header">
+                                        <a href="https://www.washingtonpost.com/technology/2021/11/26/ios-privacy-settings/">{{ prDetails[0][2] }}</a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ct-blog col-sm-6 col-md-4">
+                            <div class="inner">
+                                <div class="fauxcrop">
+                                </div>
+                                <div class="ct-blog-content">
+                                    <div class="ct-blog-date">
+                                        <span>November</span><strong>27</strong>
+                                    </div>
+                                    <h3 class="ct-blog-header">
+                                        <a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/">
+                                            {{ prDetails[1][2] }} </a>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ct-blog col-sm-6 col-md-4">
+                            <div class="inner">
+                                <div class="fauxcrop">
+                                </div>
+                                <div class="ct-blog-content">
+                                    <div class="ct-blog-date">
+                                        <span>November</span><strong>27</strong>
+                                    </div>
+                                    <h3 class="ct-blog-header">
+                                        <a href="https://www.fool.com/investing/2021/11/26/why-apple-stock-got-bit-today/">
+                                            {{ prDetails[2][2] }} </a>
+                                    </h3>
+                                </div>
+                            </div>
 
                         </div>
-                        <div class="ct-blog-content">
-                            <div class="ct-blog-date">
-                                <span>November</span><strong>27</strong>
-                            </div>
-                            <h3 class="ct-blog-header">
-                                <a href="https://www.washingtonpost.com/technology/2021/11/26/ios-privacy-settings/">Apple
-                                    iOS privacy settings to change now</a>
-                            </h3>
-                        </div>
                     </div>
                 </div>
-                <div class="ct-blog col-sm-6 col-md-4">
-                    <div class="inner">
-                        <div class="fauxcrop">
-                        </div>
-                        <div class="ct-blog-content">
-                            <div class="ct-blog-date">
-                                <span>November</span><strong>27</strong>
-                            </div>
-                            <h3 class="ct-blog-header">
-                                <a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/">
-                                    Apple sues NSO Group to curb the abuse of state-sponsored spyware </a>
-                            </h3>
-                        </div>
+            {% else %}
+                <div class="ct-blog">
+                    <div class="inner-noNews">
+                        <p class="ct-blog-header-noNews">
+                            There Is No Recent News for this Stock
+                        </p>
                     </div>
-                </div>
-                <div class="ct-blog col-sm-6 col-md-4">
-                    <div class="inner">
-                        <div class="fauxcrop">
-                        </div>
-                        <div class="ct-blog-content">
-                            <div class="ct-blog-date">
-                                <span>November</span><strong>27</strong>
-                            </div>
-                            <h3 class="ct-blog-header">
-                                <a href="https://www.fool.com/investing/2021/11/26/why-apple-stock-got-bit-today/">
-                                    Why Apple Stock Got Bit Today </a>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-{% else %}
-    <span class="NoStock"><p class="Label"> This Stock Does Not Exist, Please contact Admin to add Stock</p></span>
 
-{% endif %}
+                </div>
+
+            {% endif %}
+        </section>
+
+    {% else %}
+        <span class="NoStock"><p class="Label"> This Stock Does Not Exist, Please contact Admin to add Stock</p></span>
+
+    {% endif %}
 
 {% endblock %}
