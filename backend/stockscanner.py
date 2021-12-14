@@ -245,12 +245,13 @@ def showWatchlist():
     #newWatchlist > 0 scan for watchlist
     if resultValue > 0:
         if request.method == 'POST':
+            post_id = request.form.get('postStock')
             select_stmt = "SELECT * FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s "
-            cur.execute(select_stmt, (newWatchlist, "BBBL.NASDAQ"))
+            cur.execute(select_stmt, (newWatchlist, post_id))
             msg = cur.fetchall()
             if not msg:
                 cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-                            ("BBBL.NASDAQ", newWatchlist))
+                            (post_id, newWatchlist))
                 mysql.connection.commit()
 
         cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))

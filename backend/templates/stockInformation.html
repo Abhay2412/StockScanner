@@ -6,13 +6,15 @@
         <section class="card-group">
             <div class="card">
                 <img class="card-img-top" src="/static/{{ stockDetails[1] }}.png" alt="Card image cap">
+                 Click To add Stock to Your Watchlist
                 <form method="post" action="{{ url_for('showWatchlist') }}">
                     <input type="submit" class="btn btn-primary"
-                    value="Click To add Stock to Your Watchlist" name="postStock"/>
+                    value= "{{ stockDetails[0] }}" name="postStock"/><br>
                 </form>
 
             </div>
             </br>
+
         </section>
 
         <div id="Stocks">
