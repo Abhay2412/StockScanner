@@ -188,6 +188,11 @@ def showStockInformation(ID):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([ID]))
         stockDetails = cur.fetchone()
+
+        resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
+        if resultValue > 0:
+            dateDetails = cur.fetchall()
+
         resultValue = cur.execute("SELECT * FROM STOCKEVENT WHERE STOCK_ID = %s", ([ID]))
         if resultValue > 0:
             sDetails = cur.fetchone()
@@ -197,7 +202,7 @@ def showStockInformation(ID):
 
         else: prDetails = resultValue
 
-        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails, prDetails=prDetails)
+        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,dateDetails=dateDetails, prDetails=prDetails)
 
     if request.method == 'POST':
         cur = mysql.connection.cursor()
