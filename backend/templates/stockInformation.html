@@ -54,12 +54,15 @@
                                 <div class="fauxcrop">
                                 </div>
                                 <div class="ct-blog-content">
+                                    {% if prDetails is defined and prDetails[1] is defined %}
                                     <div class="ct-blog-date">
                                         <span>November</span><strong>27</strong>
                                     </div>
                                     <h3 class="ct-blog-header">
                                         <a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/">
-                                            {{ prDetails[1][2] }} </a>
+
+                                                {{ prDetails[1][2] }}
+                                            {% endif %}</a>
                                     </h3>
                                 </div>
                             </div>
@@ -70,11 +73,13 @@
                                 </div>
                                 <div class="ct-blog-content">
                                     <div class="ct-blog-date">
+                                        {% if prDetails is defined and prDetails[2] is defined %}
                                         <span>November</span><strong>27</strong>
                                     </div>
                                     <h3 class="ct-blog-header">
                                         <a href="https://www.fool.com/investing/2021/11/26/why-apple-stock-got-bit-today/">
-                                            {{ prDetails[2][2] }} </a>
+                                                {{ prDetails[2][2] }}
+                                                {% endif %}</a>
                                     </h3>
                                 </div>
                             </div>
@@ -86,7 +91,7 @@
                 <div class="ct-blog">
                     <div class="inner-noNews">
                         <p class="ct-blog-header-noNews">
-                            There Is No Recent News for this Stock
+                            There Are No Recent News Articles for this Stock
                         </p>
                     </div>
 
