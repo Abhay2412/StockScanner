@@ -7,6 +7,7 @@ from businessapi import business_api
 from exchangeapi import exchange_api
 from offeringapi import offering_api
 from stockapi import stock_api
+from random import randrange
 
 import yaml
 
@@ -43,18 +44,54 @@ def home():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
         if request.method == 'POST':
             userDetails = request.form
             username = userDetails['username']
             password = userDetails['password']
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
-                        (username, password, permissions))
-            mysql.connection.commit()
-            cur.close()
-            return redirect(url_for('login'))
+            existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
+            if(existsStatus == 1):
+                flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
+                return render_template('register.html', title='Register', form=form)
+            else: 
+                cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
+                            (username, password, permissions))    
+                flash(f'Account created for {form.username.data}!', 'success')
+                if(permissions == 'Private'):
+                    watchlistId = randrange(1, 10001)
+                    existsStatus1 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
+                    if(existsStatus1 == 1):
+                        watchlistIdNew = randrange(10001, 20000)
+                        if(watchlistId != watchlistIdNew):
+                            cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                            ([watchlistIdNew])) 
+                            cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+                    else:                            
+                        cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                                ([watchlistId]))   
+                        cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+
+                if(permissions == 'Professional'):
+                    watchlistId = randrange(20001, 30001)
+                    existsStatus2 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
+                    if(existsStatus2 == 1):
+                        watchlistIdNew = randrange(30002, 40002)
+                        if(watchlistId != watchlistIdNew):
+                            cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                            ([watchlistIdNew])) 
+                            cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+                    else:                            
+                        cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                                ([watchlistId]))   
+                        cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions)) 
+                mysql.connection.commit()
+                cur.close()
+                return redirect(url_for('login'))
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
