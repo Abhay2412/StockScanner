@@ -206,25 +206,25 @@ def showStockInformation(ID):
 
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,dateDetails=dateDetails, prDetails=prDetails)
 
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        new_User = session['username']
-        select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-        cur.execute(select_stmt, (new_User,))
-        listDetails = cur.fetchall()
-        newWatchlist = listDetails
+    # if request.method == 'POST':
+    #
+    #     cur = mysql.connection.cursor()
+    #     new_User = session['username']
+    #     select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
+    #     cur.execute(select_stmt, (new_User,))
+    #     listDetails = cur.fetchone()
+    #     newWatchlist = listDetails
+    #
+    #     cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+    #                 (ID, newWatchlist))
+    #     mysql.connection.commit()
+    #     cur.close()
+    #     return redirect(url_for('watchlistDetails'))
 
-        newStockID = ID
 
-        cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-                    (newStockID, newWatchlist))
-        mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('watchlistDetails'))
-
-
-@app.route('/watchlistDetails', methods=['GET'])
+@app.route('/watchlistDetails', methods=['GET', 'POST'])
 def showWatchlist():
+
     cur = mysql.connection.cursor()
     new_User = session['username']
 
@@ -244,6 +244,15 @@ def showWatchlist():
 
     #newWatchlist > 0 scan for watchlist
     if resultValue > 0:
+        if request.method == 'POST':
+            select_stmt = "SELECT * FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s "
+            cur.execute(select_stmt, (newWatchlist, "BBBL.NASDAQ"))
+            msg = cur.fetchall()
+            if not msg:
+                cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
+                            ("BBBL.NASDAQ", newWatchlist))
+                mysql.connection.commit()
+
         cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
         allListDetails = cur.fetchall()
 
