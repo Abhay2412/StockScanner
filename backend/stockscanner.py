@@ -76,7 +76,7 @@ def login():
             usernameForm = request.form.get('username')
             passwordForm = request.form.get('password')
             userAdmin = "Admin"
-            
+
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM USER Where Username = %s And Password = %s And Permissions= %s", (usernameForm, passwordForm, userAdmin))
             singleUser = cur.fetchone()
@@ -141,7 +141,7 @@ def deleteUserAdmin():
             if(existsStatus == 0):
                 flash(f'Account cannot be deleted for {form.username.data} since it does not exist!', 'danger')
                 return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
-            else: 
+            else:
                 cur.execute("DELETE FROM USER WHERE USERNAME = %s", ([username]))
                 mysql.connection.commit()
                 cur.close()
@@ -163,7 +163,7 @@ def updateUserAdmin():
             if(existStatus == 0):
                 flash(f'Account cannot be updated for {form.username.data} since it does not exist!', 'danger')
                 return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
-            else: 
+            else:
                 cur.execute("UPDATE USER SET username = %s, password = %s, permissions = %s WHERE username = %s", (username, password, permissions, username))
                 mysql.connection.commit()
                 cur.close()
@@ -215,18 +215,28 @@ def showStockInformation(ID):
 @app.route('/watchlistDetails', methods=['GET'])
 def showWatchlist():
     cur = mysql.connection.cursor()
-    json = request.json
     new_User = session['username']
+
     select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-    cur.execute(select_stmt, (new_User,))
-    listDetails = cur.fetchall()
-    newWatchlist = listDetails
+    resultValue = cur.execute(select_stmt, (new_User,))
+    if resultValue > 0:
+        listDetails = cur.fetchall()
+        newWatchlist = listDetails
 
     #if listDetail < 0 then scan PRIVATE
+    if resultValue <= 0:
+        select_stmt = "SELECT List_Number FROM PROFESSIONAL WHERE Username = %s"
+        resultValue = cur.execute(select_stmt, (new_User,))
+        if resultValue > 0:
+            listDetails = cur.fetchall()
+            newWatchlist = listDetails
 
     #newWatchlist > 0 scan for watchlist
-    cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
-    allListDetails = cur.fetchall()
+    if resultValue > 0:
+        cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
+        allListDetails = cur.fetchall()
+
+    else: allListDetails = resultValue
 
     # add listDetails to render then make an if statment to check if it exists  if not "contact admin to make watchlist"
     return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails)
