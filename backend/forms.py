@@ -28,3 +28,19 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
 
     submit = SubmitField('Login')
+
+
+class DeleteFormUser(FlaskForm):    
+    username = StringField('Username', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Delete User')
+
+class UpdateFormUser(FlaskForm):    
+    username = StringField('Username', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+    
+    password = PasswordField('Password', 
+    validators=[DataRequired(), Length(min = 8, max = 20)])
+
+    submit = SubmitField('Update User')

@@ -10,7 +10,7 @@ from stockapi import stock_api
 
 import yaml
 
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -54,7 +54,7 @@ def register():
                         (username, password, permissions))
             mysql.connection.commit()
             cur.close()
-            return redirect(url_for('showusers'))
+            return redirect(url_for('login'))
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
@@ -110,6 +110,66 @@ def logout():
 @app.route('/showAdminView')
 def showAdminView():
     return render_template('showAdminView.html', username=session['username'])
+
+@app.route('/addUserAdmin', methods=['GET', 'POST'])
+def addUserAdmin():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        if request.method == 'POST':
+            userDetails = request.form
+            username = userDetails['username']
+            password = userDetails['password']
+            permissions = request.form['user_type']
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
+                        (username, password, permissions))
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('addUserAdmin.html', title='Add User Admin', form=form)
+
+@app.route('/deleteUserAdmin', methods=['GET', 'POST'])
+def deleteUserAdmin():
+    form = DeleteFormUser()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            userDetails = request.form
+            username = userDetails['username']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
+            if(existsStatus == 0):
+                flash(f'Account cannot be deleted for {form.username.data} since it does not exist!', 'danger')
+                return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
+            else: 
+                cur.execute("DELETE FROM USER WHERE USERNAME = %s", ([username]))
+                mysql.connection.commit()
+                cur.close()
+                flash(f'Account deleted for {form.username.data}!', 'success')
+                return redirect(url_for('showAdminView'))
+    return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
+
+@app.route('/updateUserAdmin', methods=['GET', 'POST'])
+def updateUserAdmin():
+    form = UpdateFormUser()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            userDetails = request.form
+            username = userDetails['username']
+            password = userDetails['password']
+            permissions = request.form['user_type']
+            cur = mysql.connection.cursor()
+            existStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
+            if(existStatus == 0):
+                flash(f'Account cannot be updated for {form.username.data} since it does not exist!', 'danger')
+                return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
+            else: 
+                cur.execute("UPDATE USER SET username = %s, password = %s, permissions = %s WHERE username = %s", (username, password, permissions, username))
+                mysql.connection.commit()
+                cur.close()
+                flash(f'Account updated for {form.username.data} successfully!', 'success')
+                return redirect(url_for('showAdminView'))
+    return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
 
 
 @app.route('/showStocks')
