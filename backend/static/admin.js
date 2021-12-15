@@ -13,3 +13,19 @@ document.getElementById("deleteUserButton").onclick = function () {
 document.getElementById("updateUserButton").onclick = function () {
     location.href = "updateUserAdmin";
 };
+
+document.getElementById("createExchangeButton").onclick = function () {
+    location.href = "addExchangeAdmin";
+};
+
+document.getElementById("deleteExchangeButton").onclick = function () {
+    location.href = "deleteExchangeAdmin";
+};
+
+document.getElementById("updateExchangeButton").onclick = function () {
+    location.href = "updateExchangeAdmin";
+};
+
+document.getElementById("showAllExchangeButton").onclick = function () {
+    location.href = "showExchangeAdmin";
+};

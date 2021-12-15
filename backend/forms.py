@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -44,3 +44,33 @@ class UpdateFormUser(FlaskForm):
     validators=[DataRequired(), Length(min = 8, max = 20)])
 
     submit = SubmitField('Update User')
+
+class AddFormExchange(FlaskForm):    
+    name = StringField('Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+    
+    location = StringField('Location', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    number_of_tickers = IntegerField('Number of Tickers', 
+    validators=[DataRequired()])
+
+    submit = SubmitField('Add Exchange')
+
+class DeleteFormExchange(FlaskForm):    
+    name = StringField('Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Delete Exchange')
+
+class UpdateFormExchange(FlaskForm):    
+    name = StringField('Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    location = StringField('Location', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    number_of_tickers = IntegerField('Number of Tickers', 
+    validators=[DataRequired()])
+
+    submit = SubmitField('Update Exchange')

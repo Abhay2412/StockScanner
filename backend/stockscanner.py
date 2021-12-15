@@ -2,6 +2,7 @@ from flask import Flask, render_template, sessions, url_for, flash, redirect, re
 from flask.helpers import make_response
 from flask_mysqldb import MySQL
 from analystapi import analyst_api
+from exchangeapi import delete_exchange
 from belongstoapi import belongsto_api
 from businessapi import business_api
 from exchangeapi import exchange_api
@@ -11,7 +12,8 @@ from random import randrange
 
 import yaml
 
-from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser
+from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
+from forms import UpdateFormExchange
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -152,17 +154,53 @@ def showAdminView():
 def addUserAdmin():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
         if request.method == 'POST':
             userDetails = request.form
             username = userDetails['username']
             password = userDetails['password']
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
-                        (username, password, permissions))
-            mysql.connection.commit()
-            cur.close()
+            existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
+            if(existsStatus == 1):
+                flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
+                return render_template('register.html', title='Register', form=form)
+            else: 
+                cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
+                            (username, password, permissions))    
+                flash(f'Account created for {form.username.data}!', 'success')
+                if(permissions == 'Private'):
+                    watchlistId = randrange(1, 10001)
+                    existsStatus1 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
+                    if(existsStatus1 == 1):
+                        watchlistIdNew = randrange(10001, 20000)
+                        if(watchlistId != watchlistIdNew):
+                            cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                            ([watchlistIdNew])) 
+                            cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+                    else:                            
+                        cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                                ([watchlistId]))   
+                        cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+
+                if(permissions == 'Professional'):
+                    watchlistId = randrange(20001, 30001)
+                    existsStatus2 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
+                    if(existsStatus2 == 1):
+                        watchlistIdNew = randrange(30002, 40002)
+                        if(watchlistId != watchlistIdNew):
+                            cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                            ([watchlistIdNew])) 
+                            cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions))    
+                    else:                            
+                        cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
+                                ([watchlistId]))   
+                        cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
+                            (username, watchlistId, permissions)) 
+                mysql.connection.commit()
+                cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addUserAdmin.html', title='Add User Admin', form=form)
 
@@ -207,6 +245,79 @@ def updateUserAdmin():
                 flash(f'Account updated for {form.username.data} successfully!', 'success')
                 return redirect(url_for('showAdminView'))
     return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
+
+@app.route('/addExchangeAdmin', methods=['GET', 'POST'])
+def addExchangeAdmin():
+    form = AddFormExchange()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            exchangeDetails = request.form
+            name = exchangeDetails['name']
+            location = exchangeDetails['location']
+            numberOfTickers = request.form['number_of_tickers']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
+            if(existsStatus == 1):
+                flash(f'Exchange with the name {form.name.data} cannot be created since it already exists!', 'danger')
+                return render_template('addExchangeAdmin.html', title='Add Exchange Admin', form=form)
+            else:
+                cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (name, location, numberOfTickers))
+                flash(f'Exchange with the name {form.name.data} created successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('addExchangeAdmin.html', title='Add Exchange Admin', form=form)
+
+@app.route('/deleteExchangeAdmin', methods=['GET', 'POST'])
+def deleteExchangeAdmin():
+    form = DeleteFormExchange()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            exchangeDetails = request.form
+            name = exchangeDetails['name']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
+            if(existsStatus == 0):
+                flash(f'Exchange with the name {form.name.data} does not exist!', 'danger')
+                return render_template('deleteExchangeAdmin.html', title='Add Exchange Admin', form=form)
+            else:
+                delete_exchange(name)
+                flash(f'Exchange with the name {form.name.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('deleteExchangeAdmin.html', title='Add User Admin', form=form)
+
+@app.route('/updateExchangeAdmin', methods=['GET', 'POST'])
+def updateExchangeAdmin():
+    form = UpdateFormExchange()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            exchangeDetails = request.form
+            cur = mysql.connection.cursor()
+            name = exchangeDetails['name']
+            location = exchangeDetails['location']
+            numberOfTickers = request.form['number_of_tickers']
+            existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
+            if(existsStatus == 0):
+                flash(f'Exchange with the name {form.name.data} cannot be updated since it does not exists!', 'danger')
+                return render_template('updateExchangeAdmin.html', title='Update Exchange Admin', form=form)
+            else:
+                cur.execute("UPDATE EXCHANGES SET Name = %s, Location = %s, Number_of_Tickers = %s WHERE Name = %s", (name, location, numberOfTickers, name))
+                flash(f'Exchange with the name {form.name.data} updated successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('updateExchangeAdmin.html', title='Update Exchange Admin', form=form)
+
+@app.route('/showExchangeAdmin')
+def showExchangeAdmin():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM EXCHANGES")
+    if resultValue > 0:
+        exchangeDetails = cur.fetchall()
+
+    return render_template('showExchanges.html', title='Show Exchanges Admin', exchangeDetails=exchangeDetails)
 
 
 @app.route('/showStocks')
