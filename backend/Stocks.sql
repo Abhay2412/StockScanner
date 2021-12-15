@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS Business;
 CREATE TABLE Business (
 Business_ID VARCHAR(4) NOT NULL,
 Address VARCHAR(45) NOT NULL, 
-Founding_Date DATE NOT NULL,
+Founding_Date VARCHAR(25) NOT NULL,
 Business_Name VARCHAR(25) NOT NULL,
 PRIMARY KEY(Business_ID)
 );

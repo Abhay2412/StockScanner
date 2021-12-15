@@ -24,9 +24,7 @@ class LoginForm(FlaskForm):
 
     password = PasswordField('Password', 
     validators=[DataRequired(), Length(min = 8, max = 20)])
-
-    remember_me = BooleanField('Remember Me')
-
+    
     submit = SubmitField('Login')
 
 
@@ -74,3 +72,39 @@ class UpdateFormExchange(FlaskForm):
     validators=[DataRequired()])
 
     submit = SubmitField('Update Exchange')
+
+class AddFormBusiness(FlaskForm):    
+    business_id = StringField('Business ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    address = StringField('Address', 
+    validators=[DataRequired(), Length(min = 2, max = 45)])
+
+    founding_date = StringField('Founding Date', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    business_name = StringField('Business Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Add Business')
+
+class DeleteFormBusiness(FlaskForm):    
+    business_id = StringField('Business ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+
+    submit = SubmitField('Delete Business')
+
+class UpdateFormBusiness(FlaskForm):    
+    business_id = StringField('Business ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    address = StringField('Address', 
+    validators=[DataRequired(), Length(min = 2, max = 45)])
+
+    founding_date = StringField('Founding Date', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    business_name = StringField('Business Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Update Business')

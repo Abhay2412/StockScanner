@@ -29,3 +29,19 @@ document.getElementById("updateExchangeButton").onclick = function () {
 document.getElementById("showAllExchangeButton").onclick = function () {
     location.href = "showExchangeAdmin";
 };
+
+document.getElementById("createBusinessButton").onclick = function () {
+    location.href = "addBusinessAdmin";
+};
+
+document.getElementById("deleteBusinessButton").onclick = function () {
+    location.href = "deleteBusinessAdmin";
+};
+
+document.getElementById("updateBusinessButton").onclick = function () {
+    location.href = "updateBusinessAdmin";
+};
+
+document.getElementById("showAllBusinessButton").onclick = function () {
+    location.href = "showBusinessAdmin";
+};

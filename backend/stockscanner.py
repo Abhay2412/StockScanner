@@ -2,6 +2,7 @@ from flask import Flask, render_template, sessions, url_for, flash, redirect, re
 from flask.helpers import make_response
 from flask_mysqldb import MySQL
 from analystapi import analyst_api
+from businessapi import delete_business
 from exchangeapi import delete_exchange
 from belongstoapi import belongsto_api
 from businessapi import business_api
@@ -13,7 +14,7 @@ from random import randrange
 import yaml
 
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
-from forms import UpdateFormExchange
+from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -279,14 +280,14 @@ def deleteExchangeAdmin():
             existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
             if(existsStatus == 0):
                 flash(f'Exchange with the name {form.name.data} does not exist!', 'danger')
-                return render_template('deleteExchangeAdmin.html', title='Add Exchange Admin', form=form)
+                return render_template('deleteExchangeAdmin.html', title='Delete Exchange Admin', form=form)
             else:
                 delete_exchange(name)
                 flash(f'Exchange with the name {form.name.data} deleted successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
-    return render_template('deleteExchangeAdmin.html', title='Add User Admin', form=form)
+    return render_template('deleteExchangeAdmin.html', title='Delete Exchange Admin', form=form)
 
 @app.route('/updateExchangeAdmin', methods=['GET', 'POST'])
 def updateExchangeAdmin():
@@ -319,6 +320,80 @@ def showExchangeAdmin():
 
     return render_template('showExchanges.html', title='Show Exchanges Admin', exchangeDetails=exchangeDetails)
 
+@app.route('/addBusinessAdmin', methods=['GET', 'POST'])
+def addBusinessAdmin():
+    form = AddFormBusiness()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            businessDetails = request.form
+            business_id = businessDetails['business_id']
+            address = businessDetails['address']
+            founding_date = businessDetails['founding_date']
+            business_name = businessDetails['business_name']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
+            if(existsStatus == 1):
+                flash(f'Business with the name {form.business_name.data} cannot be created since it already exists!', 'danger')
+                return render_template('addBusinessAdmin.html', title='Add Business Admin', form=form)
+            else:
+               cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (business_id, address, founding_date, business_name))
+               flash(f'Business with the name {form.business_name.data} created successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('addBusinessAdmin.html', title='Add Business Admin', form=form)
+
+@app.route('/deleteBusinessAdmin', methods=['GET', 'POST'])
+def deleteBusinessAdmin():
+    form = DeleteFormBusiness()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            businessDetails = request.form
+            business_id = businessDetails['business_id']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
+            if(existsStatus == 0):
+                flash(f'Business with the ID {form.business_id.data} does not exist!', 'danger')
+                return render_template('deleteBusinessAdmin.html', title='Delete Business Admin', form=form)
+            else:
+                delete_business(business_id)
+                flash(f'Business with the ID {form.business_id.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('deleteBusinessAdmin.html', title='Delete Business Admin', form=form)
+
+@app.route('/updateBusinessAdmin', methods=['GET', 'POST'])
+def updateBusinessAdmin():
+    form = UpdateFormBusiness()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            businessDetails = request.form
+            business_id = businessDetails['business_id']
+            address = businessDetails['address']
+            founding_date = businessDetails['founding_date']
+            business_name = businessDetails['business_name']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
+            if(existsStatus == 0):
+                flash(f'Business with the name {form.business_name.data} cannot be updated since it does not exists!', 'danger')
+                return render_template('updateBusinessAdmin.html', title='Update Business Admin', form=form)
+            else:
+               cur.execute("UPDATE BUSINESS SET Business_ID=%s, Address=%s, Founding_Date=%s, Business_Name=%s WHERE Business_ID=%s", (business_id, address, founding_date, business_name, business_id))
+               flash(f'Business with the name {form.business_name.data} updated successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('updateBusinessAdmin.html', title='Update Business Admin', form=form)
+
+@app.route('/showBusinessAdmin')
+def showBusinessAdmin():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM BUSINESS")
+    if resultValue > 0:
+        businessDetails = cur.fetchall()
+
+    return render_template('showBusinesses.html', title='Show Businesses Admin', businessDetails=businessDetails)
 
 @app.route('/showStocks')
 def showStocks():
