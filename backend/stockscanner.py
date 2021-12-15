@@ -671,7 +671,14 @@ def showPR():
 
 @app.route('/week52Details')
 def showWeek52():
-    return render_template('week52.html', username=session['username'])
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM BUSINESS")
+    if resultValue > 0:
+        businessIDDetails = cur.fetchall()
+    resultValue1 = cur.execute("SELECT * FROM Week52")
+    if resultValue1 > 0:
+        week52Details1 = cur.fetchall()
+    return render_template('week52.html', title='Week 52 Section', username=session['username'], businessIDDetails=businessIDDetails, week52Details1=week52Details1)
 
 
 if __name__ == '__main__':
