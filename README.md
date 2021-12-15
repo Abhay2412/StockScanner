@@ -16,7 +16,7 @@ You will also see any lint errors in the console.
 ### Steps to Running the Website:
 1. Make sure you put your credentials in the ```db.yaml``` file and have run the ```Stocks.sql``` file through your Command line or the MySQL workbench.
 2. Open a command line client preferred is GitBash so you can right click on the folder of StockScanner and press GitBash here afterwards run this command ```cd backend``` after going into the backend folder you can use this command to run the locally hosted website on the server. 
-3.```python stockscanner.py``` will start a development server in which you can see our website. 
+3. ```python stockscanner.py``` will start a development server in which you can see our website. 
 
 --
 ##### Members:
