@@ -39,24 +39,26 @@ a{
     <th>Low($)</th>
     <th>Predict High/Low($)</th>
   </tr>
-  <tr>
-    <td><a href="https://finance.yahoo.com/quote/AAPL/">AAPL</a></td>
-    <td style="background-color:#389244">161.02</td>
-    <td style="background-color:#bb5d5d">112.59</td>
-    <td style="background-color:#389244">125.03</td>
-  </tr>
-  <tr>
-    <td><a href="https://finance.yahoo.com/quote/MSFT/">MSFT</a></td>
-    <td style="background-color:#389244">349.67</td>
-    <td style="background-color:#bb5d5d">209.11</td>
-    <td style="background-color:#389244">360.52</td>
-  </tr>
-  <tr>
-    <td><a href="https://finance.yahoo.com/quote/TSLA/">TSLA</a></td>
-    <td style="background-color:#389244">1,243.49</td>
-    <td style="background-color:#bb5d5d">539.49</td>
-    <td style="background-color:#389244">1250.85</td>
-  </tr>
+
+    {% for week52 in week52Details1 %}
+      <tr>
+        {% if loop.index == 1%}
+        <td><a href="https://finance.yahoo.com/quote/AAPL/">AAPL</a></td>
+        {% endif %}
+        {% if loop.index == 2%}
+        <td><a href="https://finance.yahoo.com/quote/MSFT/">MSFT</a></td>
+        {% endif %}
+        {% if loop.index == 3%}
+        <td><a href="https://ca.finance.yahoo.com/quote/TD.TO/">TD</a></td>
+        {% endif %}
+        {% if loop.index == 4%}
+        <td><a href="https://finance.yahoo.com/quote/TSLA/">TSLA</a></td>
+        {% endif %}
+        <td style="background-color:#389244">{{week52[3]}}</td>
+        <td style="background-color:#bb5d5d">{{week52[4]}}</td>
+        <td style="background-color:#389244">{{week52[5]}}</td>
+      </tr>
+    {% endfor %}
 </table>
 </body>
 {% endblock %}

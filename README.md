@@ -1,8 +1,8 @@
 # CPSC471FinalProjectStockScanner
 
-Part of the CPSC 471 Database Management Systems Final Project
+CPSC 471 Database Management Systems Final Project
 --
-Using the framework Flask to construct this project
+Using the framework Flask to construct this project. 
 --
 
 --
@@ -13,14 +13,22 @@ The page will reload if you make edits.
 You will also see any lint errors in the console.
 
 --
-Members:
-
--Laura Timm 
--Abhay Khosla 
--Hassan Khan 
+### Steps to Running the Website:
+1. Make sure you put your credentials in the ```db.yaml``` file and have run the ```Stocks.sql``` file through your Command line or the MySQL workbench.
+2. Open a command line client preferred is GitBash so you can right click on the folder of StockScanner and press GitBash here afterwards run this command ```cd backend``` after going into the backend folder you can use this command to run the locally hosted website on the server. 
+3. ```python stockscanner.py``` will start a development server in which you can see our website. 
 
 --
-Language:
+##### Members:
+**Group Number: 21**
 
--Python
--HTML/CSS
+* Laura Timm 
+* Abhay Khosla 
+* Hassan Khan 
+
+--
+#### Language:
+
+- Python
+- HTML/CSS
+- Javascript
