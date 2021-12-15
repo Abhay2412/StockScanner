@@ -2,6 +2,7 @@ from flask import Flask, render_template, sessions, url_for, flash, redirect, re
 from flask.helpers import make_response
 from flask_mysqldb import MySQL
 from analystapi import analyst_api
+from analystapi import delete_analyst
 from businessapi import delete_business
 from exchangeapi import delete_exchange
 from belongstoapi import belongsto_api
@@ -14,7 +15,8 @@ from random import randrange
 import yaml
 
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
-from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness
+from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
+from forms import DeleteFormAnalyst, UpdateFormAnalyst
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -394,6 +396,81 @@ def showBusinessAdmin():
         businessDetails = cur.fetchall()
 
     return render_template('showBusinesses.html', title='Show Businesses Admin', businessDetails=businessDetails)
+
+@app.route('/addAnalystAdmin', methods=['GET', 'POST'])
+def addAnalystAdmin():
+    form = AddFormAnalyst()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            analystDetails = request.form
+            analyst_id_number = analystDetails['analyst_id_number']
+            stock_id = analystDetails['stock_id']
+            analyst_name = analystDetails['analyst_name']
+            analyst_company = analystDetails['analyst_company']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
+            if(existsStatus == 1):
+                flash(f'Analyst with the name {form.analyst_name.data} cannot be created since it already exists!', 'danger')
+                return render_template('addAnalystAdmin.html', title='Add Analyst Admin', form=form)
+            else:
+               cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)", (analyst_id_number, stock_id, analyst_name, analyst_company))
+               flash(f'Analyst with the name {form.analyst_name.data} created successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('addAnalystAdmin.html', title='Add Analyst Admin', form=form)
+
+@app.route('/deleteAnalystAdmin', methods=['GET', 'POST'])
+def deleteAnalystAdmin():
+    form = DeleteFormAnalyst()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            analystDetails = request.form
+            analyst_id_number = analystDetails['analyst_id_number']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
+            if(existsStatus == 0):
+                flash(f'Analyst with the ID {form.analyst_id_number.data} does not exist!', 'danger')
+                return render_template('deleteAnalystAdmin.html', title='Delete Analyst Admin', form=form)
+            else:
+                delete_analyst(analyst_id_number)
+                flash(f'Analyst with the ID {form.analyst_id_number.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('deleteAnalystAdmin.html', title='Delete Analyst Admin', form=form)
+
+@app.route('/updateAnalystAdmin', methods=['GET', 'POST'])
+def updateAnalystAdmin():
+    form = UpdateFormAnalyst()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            analystDetails = request.form
+            analyst_id_number = analystDetails['analyst_id_number']
+            stock_id = analystDetails['stock_id']
+            analyst_name = analystDetails['analyst_name']
+            analyst_company = analystDetails['analyst_company']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
+            if(existsStatus == 0):
+                flash(f'Analyst with the name {form.analyst_name.data} cannot be updated since it does not exists!', 'danger')
+                return render_template('updateAnalystAdmin.html', title='Update Analyst Admin', form=form)
+            else:
+               cur.execute("UPDATE ANALYST SET Analyst_ID_Number=%s, ID=%s, Name=%s, Company=%s WHERE Analyst_ID_Number=%s", (analyst_id_number, stock_id, analyst_name, analyst_company, analyst_id_number))
+               flash(f'Analyst with the name {form.analyst_name.data} updated successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('updateAnalystAdmin.html', title='Update Analyst Admin', form=form)
+
+@app.route('/showAnalystAdmin')
+def showAnalystAdmin():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM ANALYST")
+    if resultValue > 0:
+        analystDetails = cur.fetchall()
+
+    return render_template('showAnalysts.html', title='Show Analyst Admin', analystDetails=analystDetails)
 
 @app.route('/showStocks')
 def showStocks():

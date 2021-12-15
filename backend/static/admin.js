@@ -45,3 +45,19 @@ document.getElementById("updateBusinessButton").onclick = function () {
 document.getElementById("showAllBusinessButton").onclick = function () {
     location.href = "showBusinessAdmin";
 };
+
+document.getElementById("createAnalystButton").onclick = function () {
+    location.href = "addAnalystAdmin";
+};
+
+document.getElementById("deleteAnalystButton").onclick = function () {
+    location.href = "deleteAnalystAdmin";
+};
+
+document.getElementById("updateAnalystButton").onclick = function () {
+    location.href = "updateAnalystAdmin";
+};
+
+document.getElementById("showAllAnalystButton").onclick = function () {
+    location.href = "showAnalystAdmin";
+};

@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username', 
     validators=[DataRequired(), Length(min = 2, max = 25)])
@@ -24,7 +23,7 @@ class LoginForm(FlaskForm):
 
     password = PasswordField('Password', 
     validators=[DataRequired(), Length(min = 8, max = 20)])
-    
+
     submit = SubmitField('Login')
 
 
@@ -108,3 +107,39 @@ class UpdateFormBusiness(FlaskForm):
     validators=[DataRequired(), Length(min = 2, max = 25)])
 
     submit = SubmitField('Update Business')
+
+class AddFormAnalyst(FlaskForm):    
+    analyst_id_number = StringField('Analyst ID Number', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    stock_id = StringField('Stock ID', 
+    validators=[DataRequired(), Length(min = 2, max = 12)])
+
+    analyst_name = StringField('Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    analyst_company = StringField('Company', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Add Analyst')
+
+class DeleteFormAnalyst(FlaskForm):    
+    analyst_id_number = StringField('Analyst ID Number', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+
+    submit = SubmitField('Delete Analyst')
+
+class UpdateFormAnalyst(FlaskForm):    
+    analyst_id_number = StringField('Analyst ID Number', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    stock_id = StringField('Stock ID', 
+    validators=[DataRequired(), Length(min = 2, max = 12)])
+
+    analyst_name = StringField('Name', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    analyst_company = StringField('Company', 
+    validators=[DataRequired(), Length(min = 2, max = 25)])
+
+    submit = SubmitField('Update Analyst')
