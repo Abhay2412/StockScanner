@@ -663,10 +663,10 @@ def showPR():
     cur = mysql.connection.cursor()
     resultValue = cur.execute("SELECT HEADLINE FROM PR")
     if resultValue > 0:
-        prDetails = cur.fetchall()
+        prDetails1 = cur.fetchall()
     else:
         return render_template('prMissing.html', title='News Section', username=session['username'])
-    return render_template('pr.html', title='News Section', username=session['username'], prDetails=prDetails)
+    return render_template('pr.html', title='News Section', username=session['username'], prDetails1=prDetails1)
 
 
 @app.route('/week52Details')
