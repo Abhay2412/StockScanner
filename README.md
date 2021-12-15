@@ -21,13 +21,14 @@ You will also see any lint errors in the console.
 --
 ##### Members:
 **Group Number: 21**
--Laura Timm 
--Abhay Khosla 
--Hassan Khan 
+
+* Laura Timm 
+* Abhay Khosla 
+* Hassan Khan 
 
 --
 #### Language:
 
--Python
--HTML/CSS
--Javascript
+- Python
+- HTML/CSS
+- Javascript
