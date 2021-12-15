@@ -3,6 +3,20 @@
 
 html { height: 100%; }
 
+a:hover {
+  background-color: cornflowerblue;
+  color: white;
+}
+
+.previous {
+  background-color: #007bff;
+  color: white;
+    border-radius: 10%;
+  display: inline-block;
+  padding: 10px 20px;
+}
+
+
 body {
   min-height: 100%;
   display: flex;

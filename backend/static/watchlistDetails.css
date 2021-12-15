@@ -24,4 +24,8 @@ h1, p{
 .NoList{
     font-size: 20px;
 }
+.Delete{
+    font-size: 20px;
+    text-align: left; !important;
+}
 

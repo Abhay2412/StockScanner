@@ -206,23 +206,9 @@ def showStockInformation(ID):
 
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,dateDetails=dateDetails, prDetails=prDetails)
 
-    # if request.method == 'POST':
-    #
-    #     cur = mysql.connection.cursor()
-    #     new_User = session['username']
-    #     select_stmt = "SELECT List_Number FROM PRIVATE WHERE Username = %s"
-    #     cur.execute(select_stmt, (new_User,))
-    #     listDetails = cur.fetchone()
-    #     newWatchlist = listDetails
-    #
-    #     cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
-    #                 (ID, newWatchlist))
-    #     mysql.connection.commit()
-    #     cur.close()
-    #     return redirect(url_for('watchlistDetails'))
 
 
-@app.route('/watchlistDetails', methods=['GET', 'POST'])
+@app.route('/watchlistDetails', methods=['GET', 'POST', 'DELETE'])
 def showWatchlist():
 
     cur = mysql.connection.cursor()
@@ -253,6 +239,13 @@ def showWatchlist():
                 cur.execute("INSERT INTO CONTAIN(Stock_ID, Watchlist_ID) VALUES(%s, %s)",
                             (post_id, newWatchlist))
                 mysql.connection.commit()
+
+        if request.method == 'DELETE':
+            text = request.form['text']
+            processed_text = text.upper()
+            cur.execute("DELETE FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s", ([newWatchlist, processed_text]))
+            mysql.connection.commit()
+            cur.close()
 
         cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
         allListDetails = cur.fetchall()

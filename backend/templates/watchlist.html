@@ -1,33 +1,41 @@
-{% extends "loginedview.html" %} 
+{% extends "loginedview.html" %}
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'watchlistDetails.css') }}">
 
-<h1>{{ username }}'s Watchlist Details</h1> <br/>
+    <h1>{{ username }}'s Watchlist Details</h1> <br/>
     {% if resultValue %}
         {% if allListDetails %}
             <p> Click on stock to see more information </p>
 
             <table>
-            <thead>
-            <tr>
-                <th>Stock ID</th>
-            </tr>
-            </thead>
-            <tbody>
+                <thead>
+                <tr>
+                    <th>Stock ID</th>
+                </tr>
+                </thead>
+                <tbody>
 
-            {% for item in allListDetails %}
-        <tr>
-            <td> <a href="{{ url_for('showStockInformation', ID = item[1]) }}">{{item[1]}}</a></td>
-        </tr>
-        {% endfor %}
-            {% else %}
-            <span class="NoList"><p class="Label"> There are no stocks in your watchlist <br> Please view <a href="{{ url_for('showStocks') }}">Stocks Page</a> to add  Stocks to watchlist.</p></span>
-            {% endif %}
+                {% for item in allListDetails %}
+                    <tr>
+                        <td><a href="{{ url_for('showStockInformation', ID = item[1]) }}">{{ item[1] }}</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table> <br>
+            <span class="Delete"> Delete Stock From Watchlist:  </span>
+            <form method="DELETE">
+                <input name="text">
+                 <input type="submit" value="delete">
+            </form>
+        {% else %}
+            <span class="NoList"><p class="Label"> There are no stocks in your watchlist <br> Please view <a
+                    href="{{ url_for('showStocks') }}">Stocks Page</a> to add  Stocks to watchlist.</p></span>
+        {% endif %}
     {% else %}
         <span class="NoList"><p class="Label"> You Do Not have a Watchlist <br> Please contact Admin to get a Watchlist Created for you.</p></span>
     {% endif %}
-     </tbody>
-</table>
+
 
 {% endblock %}
