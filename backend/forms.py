@@ -158,20 +158,15 @@ class AddFormStock(FlaskForm):
     predict_stock_price = IntegerField('Predict Stock Price', 
     validators=[DataRequired()])
     
-    strong_buy = SelectField('Strong Buy', 
-    validators=[DataRequired()])
+    strong_buy = SelectField('Strong Buy', choices=[(1, 1), (0, 0)])
 
-    rating_buy = IntegerField('Rating Buy', 
-    validators=[DataRequired()])
+    rating_buy = SelectField('Rating Buy', choices=[(1, 1), (0, 0)])
 
-    rating_sell = IntegerField('Rating Sell', 
-    validators=[DataRequired()])
+    rating_sell = SelectField('Rating Sell', choices=[(1, 1), (0, 0)])
 
-    strong_sell = IntegerField('Strong Sell', 
-    validators=[DataRequired()])
+    strong_sell = SelectField('Strong Sell', choices=[(1, 1), (0, 0)])
 
-    rating_hold = IntegerField('Rating Hold', 
-    validators=[DataRequired()])
+    rating_hold = SelectField('Rating Hold', choices=[(1, 1), (0, 0)])
 
     stock_price = IntegerField('Stock Price', 
     validators=[DataRequired()])
