@@ -660,7 +660,11 @@ def showEvents():
 
 @app.route('/prDetails')
 def showPR():
-    return render_template('pr.html', username=session['username'])
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT HEADLINE FROM PR")
+    if resultValue > 0:
+        prDetails = cur.fetchall()
+    return render_template('pr.html', title='News Section', username=session['username'], prDetails=prDetails)
 
 
 @app.route('/week52Details')
