@@ -664,6 +664,8 @@ def showPR():
     resultValue = cur.execute("SELECT HEADLINE FROM PR")
     if resultValue > 0:
         prDetails = cur.fetchall()
+    else:
+        return render_template('prMissing.html', title='News Section', username=session['username'])
     return render_template('pr.html', title='News Section', username=session['username'], prDetails=prDetails)
 
 
