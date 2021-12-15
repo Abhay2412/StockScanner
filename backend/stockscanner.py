@@ -3,6 +3,7 @@ from flask.helpers import make_response
 from flask_mysqldb import MySQL
 from analystapi import analyst_api
 from analystapi import delete_analyst
+from stockapi import delete_stocks
 from businessapi import delete_business
 from exchangeapi import delete_exchange
 from belongstoapi import belongsto_api
@@ -16,7 +17,7 @@ import yaml
 
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
 from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
-from forms import DeleteFormAnalyst, UpdateFormAnalyst
+from forms import DeleteFormAnalyst, UpdateFormAnalyst, AddFormStock, DeleteFormStock, UpdateFormStock
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -471,6 +472,95 @@ def showAnalystAdmin():
         analystDetails = cur.fetchall()
 
     return render_template('showAnalysts.html', title='Show Analyst Admin', analystDetails=analystDetails)
+
+@app.route('/addStockAdmin', methods=['GET', 'POST'])
+def addStockAdmin():
+    form = AddFormStock()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            stockDetails = request.form
+            stock_id = stockDetails['stock_id']
+            company_id = stockDetails['company_id']
+            prediction_id = stockDetails['prediction_id']
+            predict_stock_price = stockDetails['predict_stock_price']
+            strong_buy = stockDetails['strong_buy']
+            rating_buy = stockDetails['rating_buy']
+            rating_sell = stockDetails['rating_sell']
+            strong_sell = stockDetails['strong_sell']
+            rating_hold = stockDetails['rating_hold']
+            stock_price = stockDetails['stock_price']
+            sector = stockDetails['sector']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
+            if(existsStatus == 1):
+                flash(f'Stock with the ID {form.stock_id.data} cannot be created since it already exists!', 'danger')
+                return render_template('addStockAdmin.html', title='Add Stock Admin', form=form)
+            else:
+               cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell, strong_sell, rating_hold, stock_price, sector))
+               flash(f'Stock with the ID {form.stock_id.data} created successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('addStockAdmin.html', title='Add Stock Admin', form=form)
+
+@app.route('/deleteStockAdmin', methods=['GET', 'POST'])
+def deleteStockAdmin():
+    form = DeleteFormStock()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            stockDetails = request.form
+            stock_id = stockDetails['stock_id']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
+            if(existsStatus == 0):
+                flash(f'Stock with the ID {form.stock_id.data} does not exist!', 'danger')
+                return render_template('deleteStockAdmin.html', title='Delete Stock Admin', form=form)
+            else:
+                delete_stocks(stock_id)
+                flash(f'Stock with the ID {form.stock_id.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('deleteStockAdmin.html', title='Delete Stock Admin', form=form)
+
+@app.route('/updateStockAdmin', methods=['GET', 'POST'])
+def updateStockAdmin():
+    form = UpdateFormStock()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            stockDetails = request.form
+            stock_id = stockDetails['stock_id']
+            company_id = stockDetails['company_id']
+            prediction_id = stockDetails['prediction_id']
+            predict_stock_price = stockDetails['predict_stock_price']
+            strong_buy = stockDetails['strong_buy']
+            rating_buy = stockDetails['rating_buy']
+            rating_sell = stockDetails['rating_sell']
+            strong_sell = stockDetails['strong_sell']
+            rating_hold = stockDetails['rating_hold']
+            stock_price = stockDetails['stock_price']
+            sector = stockDetails['sector']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
+            if(existsStatus == 0):
+                flash(f'Stock with the ID {form.stock_id.data} cannot be updated since it does not exists!', 'danger')
+                return render_template('updateStockAdmin.html', title='Update Stock Admin', form=form)
+            else:
+               cur.execute("UPDATE STOCK SET ID=%s, Company_ID=%s, Prediction_ID=%s, Predict_Stock_Price=%s, Strong_Buy=%s, Rating_Buy=%s, Rating_Sell=%s, Strong_Sell=%s, Rating_Hold=%s, Stock_Price=%s, Sector=%s WHERE ID=%s", (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell, strong_sell, rating_hold, stock_price, sector, stock_id))
+               flash(f'Stock with the ID {form.stock_id.data} updated successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showAdminView'))
+    return render_template('updateStockAdmin.html', title='Update Stock Admin', form=form)
+
+@app.route('/showStockAdmin')
+def showStockAdmin():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM STOCK")
+    if resultValue > 0:
+        stockDetails = cur.fetchall()
+
+    return render_template('showStocksAdmin.html', title='Show Stock Admin', stockDetails=stockDetails)
 
 @app.route('/showStocks')
 def showStocks():

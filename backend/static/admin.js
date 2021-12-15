@@ -61,3 +61,19 @@ document.getElementById("updateAnalystButton").onclick = function () {
 document.getElementById("showAllAnalystButton").onclick = function () {
     location.href = "showAnalystAdmin";
 };
+
+document.getElementById("createStockButton").onclick = function () {
+    location.href = "addStockAdmin";
+};
+
+document.getElementById("deleteStockButton").onclick = function () {
+    location.href = "deleteStockAdmin";
+};
+
+document.getElementById("updateStockButton").onclick = function () {
+    location.href = "updateStockAdmin";
+};
+
+document.getElementById("showAllStockButton").onclick = function () {
+    location.href = "showStockAdmin";
+};

@@ -143,3 +143,86 @@ class UpdateFormAnalyst(FlaskForm):
     validators=[DataRequired(), Length(min = 2, max = 25)])
 
     submit = SubmitField('Update Analyst')
+
+
+class AddFormStock(FlaskForm):    
+    stock_id = StringField('Stock ID', 
+    validators=[DataRequired(), Length(min = 2, max = 12)])
+
+    company_id = StringField('Company ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+
+    prediction_id = StringField('Prediction ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    predict_stock_price = IntegerField('Predict Stock Price', 
+    validators=[DataRequired()])
+    
+    strong_buy = SelectField('Strong Buy', 
+    validators=[DataRequired()])
+
+    rating_buy = IntegerField('Rating Buy', 
+    validators=[DataRequired()])
+
+    rating_sell = IntegerField('Rating Sell', 
+    validators=[DataRequired()])
+
+    strong_sell = IntegerField('Strong Sell', 
+    validators=[DataRequired()])
+
+    rating_hold = IntegerField('Rating Hold', 
+    validators=[DataRequired()])
+
+    stock_price = IntegerField('Stock Price', 
+    validators=[DataRequired()])
+
+    sector = StringField('Sector', 
+    validators=[DataRequired(), Length(min = 2, max = 255)])
+
+    submit = SubmitField('Add Stock')
+
+class DeleteFormStock(FlaskForm):    
+    stock_id = StringField('Stock ID', 
+    validators=[DataRequired(), Length(min = 2, max = 12)])
+
+    submit = SubmitField('Delete Stock')
+
+class UpdateFormStock(FlaskForm):    
+    stock_id = StringField('Stock ID', 
+    validators=[DataRequired(), Length(min = 2, max = 12)])
+
+    company_id = StringField('Company ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+
+    prediction_id = StringField('Prediction ID', 
+    validators=[DataRequired(), Length(min = 2, max = 4)])
+    
+    predict_stock_price = IntegerField('Predict Stock Price', 
+    validators=[DataRequired()])
+    
+    strong_buy = IntegerField('Strong Buy', 
+    validators=[DataRequired()])
+
+    rating_buy = IntegerField('Rating Buy', 
+    validators=[DataRequired()])
+
+    rating_sell = IntegerField('Rating Sell', 
+    validators=[DataRequired()])
+
+    strong_sell = IntegerField('Strong Sell', 
+    validators=[DataRequired()])
+
+    strong_buy = IntegerField('Strong Buy', 
+    validators=[DataRequired()])
+
+    rating_hold = IntegerField('Rating Hold', 
+    validators=[DataRequired()])
+
+    stock_price = IntegerField('Stock Price', 
+    validators=[DataRequired()])
+
+    sector = StringField('Sector', 
+    validators=[DataRequired(), Length(min = 2, max = 255)])
+
+
+    submit = SubmitField('Update Stock')
