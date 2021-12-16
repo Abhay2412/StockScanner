@@ -1,9 +1,10 @@
 {% extends "loginedview.html" %}
 {% block content %}
-
+<a href="{{ url_for('showStocks') }}" class="previous">&laquo; Back to Stocks</a><br><br>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'watchlistDetails.css') }}">
 
-    <h1>{{ username }}'s Watchlist Details  </h1> <br/>
+    <h1>{{ username }}'s Watchlist Details  </h1>
+    <h3> Watchlist ID: {{ listDetails[0][0] }}</h3><br/>
     {% if resultValue %}
         {{ resultValue[1] }}
         {% if allListDetails %}
@@ -11,12 +12,12 @@
 
             <table>
                 <thead>
+
                 <tr>
                     <th>Stock ID</th>
                 </tr>
                 </thead>
                 <tbody>
-
                 {% for item in allListDetails %}
                     <tr>
                         <td><a href="{{ url_for('showStockInformation', ID = item[1]) }}">{{ item[1] }}</a>
