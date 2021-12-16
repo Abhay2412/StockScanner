@@ -18,6 +18,7 @@ import yaml
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
 from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
 from forms import DeleteFormAnalyst, UpdateFormAnalyst, AddFormStock, DeleteFormStock, UpdateFormStock
+from forms import DeleteFormStockWatchlist
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -57,44 +58,44 @@ def register():
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
-            if(existsStatus == 1):
+            if (existsStatus == 1):
                 flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
                 return render_template('register.html', title='Register', form=form)
-            else: 
+            else:
                 cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
-                            (username, password, permissions))    
+                            (username, password, permissions))
                 flash(f'Account created for {form.username.data}!', 'success')
-                if(permissions == 'Private'):
+                if (permissions == 'Private'):
                     watchlistId = randrange(1, 10001)
                     existsStatus1 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
-                    if(existsStatus1 == 1):
+                    if (existsStatus1 == 1):
                         watchlistIdNew = randrange(10001, 20000)
-                        if(watchlistId != watchlistIdNew):
+                        if (watchlistId != watchlistIdNew):
                             cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                            ([watchlistIdNew])) 
+                                        ([watchlistIdNew]))
                             cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
-                    else:                            
+                                        (username, watchlistId, permissions))
+                    else:
                         cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                                ([watchlistId]))   
+                                    ([watchlistId]))
                         cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
+                                    (username, watchlistId, permissions))
 
-                if(permissions == 'Professional'):
+                if (permissions == 'Professional'):
                     watchlistId = randrange(20001, 30001)
                     existsStatus2 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
-                    if(existsStatus2 == 1):
+                    if (existsStatus2 == 1):
                         watchlistIdNew = randrange(30002, 40002)
-                        if(watchlistId != watchlistIdNew):
+                        if (watchlistId != watchlistIdNew):
                             cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                            ([watchlistIdNew])) 
+                                        ([watchlistIdNew]))
                             cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
-                    else:                            
+                                        (username, watchlistId, permissions))
+                    else:
                         cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                                ([watchlistId]))   
+                                    ([watchlistId]))
                         cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions)) 
+                                    (username, watchlistId, permissions))
                 mysql.connection.commit()
                 cur.close()
                 return redirect(url_for('login'))
@@ -121,7 +122,8 @@ def login():
             userAdmin = "Admin"
 
             cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM USER Where Username = %s And Password = %s And Permissions= %s", (usernameForm, passwordForm, userAdmin))
+            cur.execute("SELECT * FROM USER Where Username = %s And Password = %s And Permissions= %s",
+                        (usernameForm, passwordForm, userAdmin))
             singleUser = cur.fetchone()
             if singleUser and userAdmin == 'Admin':
                 session['loggedin'] = True
@@ -140,7 +142,6 @@ def login():
             else:
                 flash('Login Failed. Please check your credentials again.', 'danger')
 
-
     return render_template('login.html', title='Login', form=form)
 
 
@@ -150,9 +151,11 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+
 @app.route('/showAdminView')
 def showAdminView():
     return render_template('showAdminView.html', username=session['username'])
+
 
 @app.route('/addUserAdmin', methods=['GET', 'POST'])
 def addUserAdmin():
@@ -165,48 +168,49 @@ def addUserAdmin():
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
-            if(existsStatus == 1):
+            if (existsStatus == 1):
                 flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
                 return render_template('register.html', title='Register', form=form)
-            else: 
+            else:
                 cur.execute("INSERT INTO USER(username, password, permissions) VALUES(%s, %s, %s)",
-                            (username, password, permissions))    
+                            (username, password, permissions))
                 flash(f'Account created for {form.username.data}!', 'success')
-                if(permissions == 'Private'):
+                if (permissions == 'Private'):
                     watchlistId = randrange(1, 10001)
                     existsStatus1 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
-                    if(existsStatus1 == 1):
+                    if (existsStatus1 == 1):
                         watchlistIdNew = randrange(10001, 20000)
-                        if(watchlistId != watchlistIdNew):
+                        if (watchlistId != watchlistIdNew):
                             cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                            ([watchlistIdNew])) 
+                                        ([watchlistIdNew]))
                             cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
-                    else:                            
+                                        (username, watchlistId, permissions))
+                    else:
                         cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                                ([watchlistId]))   
+                                    ([watchlistId]))
                         cur.execute("INSERT INTO PRIVATE(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
+                                    (username, watchlistId, permissions))
 
-                if(permissions == 'Professional'):
+                if (permissions == 'Professional'):
                     watchlistId = randrange(20001, 30001)
                     existsStatus2 = cur.execute("SELECT * FROM Watchlist WHERE List_Number = %s", ([watchlistId]))
-                    if(existsStatus2 == 1):
+                    if (existsStatus2 == 1):
                         watchlistIdNew = randrange(30002, 40002)
-                        if(watchlistId != watchlistIdNew):
+                        if (watchlistId != watchlistIdNew):
                             cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                            ([watchlistIdNew])) 
+                                        ([watchlistIdNew]))
                             cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions))    
-                    else:                            
+                                        (username, watchlistId, permissions))
+                    else:
                         cur.execute("INSERT INTO Watchlist(List_Number) VALUES(%s)",
-                                ([watchlistId]))   
+                                    ([watchlistId]))
                         cur.execute("INSERT INTO PROFESSIONAL(username, List_Number, Role_Type) VALUES(%s, %s, %s)",
-                            (username, watchlistId, permissions)) 
+                                    (username, watchlistId, permissions))
                 mysql.connection.commit()
                 cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addUserAdmin.html', title='Add User Admin', form=form)
+
 
 @app.route('/deleteUserAdmin', methods=['GET', 'POST'])
 def deleteUserAdmin():
@@ -217,7 +221,7 @@ def deleteUserAdmin():
             username = userDetails['username']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Account cannot be deleted for {form.username.data} since it does not exist!', 'danger')
                 return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
             else:
@@ -227,6 +231,7 @@ def deleteUserAdmin():
                 flash(f'Account deleted for {form.username.data}!', 'success')
                 return redirect(url_for('showAdminView'))
     return render_template('deleteUserAdmin.html', title='Delete User Admin', form=form)
+
 
 @app.route('/updateUserAdmin', methods=['GET', 'POST'])
 def updateUserAdmin():
@@ -239,16 +244,18 @@ def updateUserAdmin():
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
             existStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
-            if(existStatus == 0):
+            if (existStatus == 0):
                 flash(f'Account cannot be updated for {form.username.data} since it does not exist!', 'danger')
                 return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
             else:
-                cur.execute("UPDATE USER SET username = %s, password = %s, permissions = %s WHERE username = %s", (username, password, permissions, username))
+                cur.execute("UPDATE USER SET username = %s, password = %s, permissions = %s WHERE username = %s",
+                            (username, password, permissions, username))
                 mysql.connection.commit()
                 cur.close()
                 flash(f'Account updated for {form.username.data} successfully!', 'success')
                 return redirect(url_for('showAdminView'))
     return render_template('updateUserAdmin.html', title='Update User Admin', form=form)
+
 
 @app.route('/addExchangeAdmin', methods=['GET', 'POST'])
 def addExchangeAdmin():
@@ -261,16 +268,18 @@ def addExchangeAdmin():
             numberOfTickers = request.form['number_of_tickers']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
-            if(existsStatus == 1):
+            if (existsStatus == 1):
                 flash(f'Exchange with the name {form.name.data} cannot be created since it already exists!', 'danger')
                 return render_template('addExchangeAdmin.html', title='Add Exchange Admin', form=form)
             else:
-                cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)", (name, location, numberOfTickers))
+                cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)",
+                            (name, location, numberOfTickers))
                 flash(f'Exchange with the name {form.name.data} created successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addExchangeAdmin.html', title='Add Exchange Admin', form=form)
+
 
 @app.route('/deleteExchangeAdmin', methods=['GET', 'POST'])
 def deleteExchangeAdmin():
@@ -281,7 +290,7 @@ def deleteExchangeAdmin():
             name = exchangeDetails['name']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Exchange with the name {form.name.data} does not exist!', 'danger')
                 return render_template('deleteExchangeAdmin.html', title='Delete Exchange Admin', form=form)
             else:
@@ -291,6 +300,7 @@ def deleteExchangeAdmin():
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('deleteExchangeAdmin.html', title='Delete Exchange Admin', form=form)
+
 
 @app.route('/updateExchangeAdmin', methods=['GET', 'POST'])
 def updateExchangeAdmin():
@@ -303,16 +313,18 @@ def updateExchangeAdmin():
             location = exchangeDetails['location']
             numberOfTickers = request.form['number_of_tickers']
             existsStatus = cur.execute("SELECT * FROM EXCHANGES WHERE NAME = %s", ([name]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Exchange with the name {form.name.data} cannot be updated since it does not exists!', 'danger')
                 return render_template('updateExchangeAdmin.html', title='Update Exchange Admin', form=form)
             else:
-                cur.execute("UPDATE EXCHANGES SET Name = %s, Location = %s, Number_of_Tickers = %s WHERE Name = %s", (name, location, numberOfTickers, name))
+                cur.execute("UPDATE EXCHANGES SET Name = %s, Location = %s, Number_of_Tickers = %s WHERE Name = %s",
+                            (name, location, numberOfTickers, name))
                 flash(f'Exchange with the name {form.name.data} updated successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('updateExchangeAdmin.html', title='Update Exchange Admin', form=form)
+
 
 @app.route('/showExchangeAdmin')
 def showExchangeAdmin():
@@ -322,6 +334,7 @@ def showExchangeAdmin():
         exchangeDetails = cur.fetchall()
 
     return render_template('showExchanges.html', title='Show Exchanges Admin', exchangeDetails=exchangeDetails)
+
 
 @app.route('/addBusinessAdmin', methods=['GET', 'POST'])
 def addBusinessAdmin():
@@ -335,16 +348,20 @@ def addBusinessAdmin():
             business_name = businessDetails['business_name']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
-            if(existsStatus == 1):
-                flash(f'Business with the name {form.business_name.data} cannot be created since it already exists!', 'danger')
+            if (existsStatus == 1):
+                flash(f'Business with the name {form.business_name.data} cannot be created since it already exists!',
+                      'danger')
                 return render_template('addBusinessAdmin.html', title='Add Business Admin', form=form)
             else:
-               cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)", (business_id, address, founding_date, business_name))
-               flash(f'Business with the name {form.business_name.data} created successfully!', 'success')
+                cur.execute(
+                    "INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)",
+                    (business_id, address, founding_date, business_name))
+                flash(f'Business with the name {form.business_name.data} created successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addBusinessAdmin.html', title='Add Business Admin', form=form)
+
 
 @app.route('/deleteBusinessAdmin', methods=['GET', 'POST'])
 def deleteBusinessAdmin():
@@ -355,7 +372,7 @@ def deleteBusinessAdmin():
             business_id = businessDetails['business_id']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Business with the ID {form.business_id.data} does not exist!', 'danger')
                 return render_template('deleteBusinessAdmin.html', title='Delete Business Admin', form=form)
             else:
@@ -365,6 +382,7 @@ def deleteBusinessAdmin():
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('deleteBusinessAdmin.html', title='Delete Business Admin', form=form)
+
 
 @app.route('/updateBusinessAdmin', methods=['GET', 'POST'])
 def updateBusinessAdmin():
@@ -378,16 +396,20 @@ def updateBusinessAdmin():
             business_name = businessDetails['business_name']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM BUSINESS WHERE Business_ID = %s", ([business_id]))
-            if(existsStatus == 0):
-                flash(f'Business with the name {form.business_name.data} cannot be updated since it does not exists!', 'danger')
+            if (existsStatus == 0):
+                flash(f'Business with the name {form.business_name.data} cannot be updated since it does not exists!',
+                      'danger')
                 return render_template('updateBusinessAdmin.html', title='Update Business Admin', form=form)
             else:
-               cur.execute("UPDATE BUSINESS SET Business_ID=%s, Address=%s, Founding_Date=%s, Business_Name=%s WHERE Business_ID=%s", (business_id, address, founding_date, business_name, business_id))
-               flash(f'Business with the name {form.business_name.data} updated successfully!', 'success')
+                cur.execute(
+                    "UPDATE BUSINESS SET Business_ID=%s, Address=%s, Founding_Date=%s, Business_Name=%s WHERE Business_ID=%s",
+                    (business_id, address, founding_date, business_name, business_id))
+                flash(f'Business with the name {form.business_name.data} updated successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('updateBusinessAdmin.html', title='Update Business Admin', form=form)
+
 
 @app.route('/showBusinessAdmin')
 def showBusinessAdmin():
@@ -397,6 +419,7 @@ def showBusinessAdmin():
         businessDetails = cur.fetchall()
 
     return render_template('showBusinesses.html', title='Show Businesses Admin', businessDetails=businessDetails)
+
 
 @app.route('/addAnalystAdmin', methods=['GET', 'POST'])
 def addAnalystAdmin():
@@ -410,16 +433,19 @@ def addAnalystAdmin():
             analyst_company = analystDetails['analyst_company']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
-            if(existsStatus == 1):
-                flash(f'Analyst with the name {form.analyst_name.data} cannot be created since it already exists!', 'danger')
+            if (existsStatus == 1):
+                flash(f'Analyst with the name {form.analyst_name.data} cannot be created since it already exists!',
+                      'danger')
                 return render_template('addAnalystAdmin.html', title='Add Analyst Admin', form=form)
             else:
-               cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)", (analyst_id_number, stock_id, analyst_name, analyst_company))
-               flash(f'Analyst with the name {form.analyst_name.data} created successfully!', 'success')
+                cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)",
+                            (analyst_id_number, stock_id, analyst_name, analyst_company))
+                flash(f'Analyst with the name {form.analyst_name.data} created successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addAnalystAdmin.html', title='Add Analyst Admin', form=form)
+
 
 @app.route('/deleteAnalystAdmin', methods=['GET', 'POST'])
 def deleteAnalystAdmin():
@@ -430,7 +456,7 @@ def deleteAnalystAdmin():
             analyst_id_number = analystDetails['analyst_id_number']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Analyst with the ID {form.analyst_id_number.data} does not exist!', 'danger')
                 return render_template('deleteAnalystAdmin.html', title='Delete Analyst Admin', form=form)
             else:
@@ -440,6 +466,7 @@ def deleteAnalystAdmin():
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('deleteAnalystAdmin.html', title='Delete Analyst Admin', form=form)
+
 
 @app.route('/updateAnalystAdmin', methods=['GET', 'POST'])
 def updateAnalystAdmin():
@@ -453,16 +480,20 @@ def updateAnalystAdmin():
             analyst_company = analystDetails['analyst_company']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM ANALYST WHERE Analyst_ID_Number = %s", ([analyst_id_number]))
-            if(existsStatus == 0):
-                flash(f'Analyst with the name {form.analyst_name.data} cannot be updated since it does not exists!', 'danger')
+            if (existsStatus == 0):
+                flash(f'Analyst with the name {form.analyst_name.data} cannot be updated since it does not exists!',
+                      'danger')
                 return render_template('updateAnalystAdmin.html', title='Update Analyst Admin', form=form)
             else:
-               cur.execute("UPDATE ANALYST SET Analyst_ID_Number=%s, ID=%s, Name=%s, Company=%s WHERE Analyst_ID_Number=%s", (analyst_id_number, stock_id, analyst_name, analyst_company, analyst_id_number))
-               flash(f'Analyst with the name {form.analyst_name.data} updated successfully!', 'success')
+                cur.execute(
+                    "UPDATE ANALYST SET Analyst_ID_Number=%s, ID=%s, Name=%s, Company=%s WHERE Analyst_ID_Number=%s",
+                    (analyst_id_number, stock_id, analyst_name, analyst_company, analyst_id_number))
+                flash(f'Analyst with the name {form.analyst_name.data} updated successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('updateAnalystAdmin.html', title='Update Analyst Admin', form=form)
+
 
 @app.route('/showAnalystAdmin')
 def showAnalystAdmin():
@@ -472,6 +503,7 @@ def showAnalystAdmin():
         analystDetails = cur.fetchall()
 
     return render_template('showAnalysts.html', title='Show Analyst Admin', analystDetails=analystDetails)
+
 
 @app.route('/addStockAdmin', methods=['GET', 'POST'])
 def addStockAdmin():
@@ -492,16 +524,20 @@ def addStockAdmin():
             sector = stockDetails['sector']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
-            if(existsStatus == 1):
+            if (existsStatus == 1):
                 flash(f'Stock with the ID {form.stock_id.data} cannot be created since it already exists!', 'danger')
                 return render_template('addStockAdmin.html', title='Add Stock Admin', form=form)
             else:
-               cur.execute("INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell, strong_sell, rating_hold, stock_price, sector))
-               flash(f'Stock with the ID {form.stock_id.data} created successfully!', 'success')
+                cur.execute(
+                    "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell,
+                     strong_sell, rating_hold, stock_price, sector))
+                flash(f'Stock with the ID {form.stock_id.data} created successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('addStockAdmin.html', title='Add Stock Admin', form=form)
+
 
 @app.route('/deleteStockAdmin', methods=['GET', 'POST'])
 def deleteStockAdmin():
@@ -512,7 +548,7 @@ def deleteStockAdmin():
             stock_id = stockDetails['stock_id']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Stock with the ID {form.stock_id.data} does not exist!', 'danger')
                 return render_template('deleteStockAdmin.html', title='Delete Stock Admin', form=form)
             else:
@@ -522,6 +558,7 @@ def deleteStockAdmin():
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('deleteStockAdmin.html', title='Delete Stock Admin', form=form)
+
 
 @app.route('/updateStockAdmin', methods=['GET', 'POST'])
 def updateStockAdmin():
@@ -542,16 +579,20 @@ def updateStockAdmin():
             sector = stockDetails['sector']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
-            if(existsStatus == 0):
+            if (existsStatus == 0):
                 flash(f'Stock with the ID {form.stock_id.data} cannot be updated since it does not exists!', 'danger')
                 return render_template('updateStockAdmin.html', title='Update Stock Admin', form=form)
             else:
-               cur.execute("UPDATE STOCK SET ID=%s, Company_ID=%s, Prediction_ID=%s, Predict_Stock_Price=%s, Strong_Buy=%s, Rating_Buy=%s, Rating_Sell=%s, Strong_Sell=%s, Rating_Hold=%s, Stock_Price=%s, Sector=%s WHERE ID=%s", (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell, strong_sell, rating_hold, stock_price, sector, stock_id))
-               flash(f'Stock with the ID {form.stock_id.data} updated successfully!', 'success')
+                cur.execute(
+                    "UPDATE STOCK SET ID=%s, Company_ID=%s, Prediction_ID=%s, Predict_Stock_Price=%s, Strong_Buy=%s, Rating_Buy=%s, Rating_Sell=%s, Strong_Sell=%s, Rating_Hold=%s, Stock_Price=%s, Sector=%s WHERE ID=%s",
+                    (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell,
+                     strong_sell, rating_hold, stock_price, sector, stock_id))
+                flash(f'Stock with the ID {form.stock_id.data} updated successfully!', 'success')
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('showAdminView'))
     return render_template('updateStockAdmin.html', title='Update Stock Admin', form=form)
+
 
 @app.route('/showStockAdmin')
 def showStockAdmin():
@@ -561,6 +602,7 @@ def showStockAdmin():
         stockDetails = cur.fetchall()
 
     return render_template('showStocksAdmin.html', title='Show Stock Admin', stockDetails=stockDetails)
+
 
 @app.route('/showStocks')
 def showStocks():
@@ -592,15 +634,15 @@ def showStockInformation(ID):
             cur.execute("SELECT * FROM PR WHERE P_ID = %s", ([newPID]))
             prDetails = cur.fetchall()
 
-        else: prDetails = resultValue
+        else:
+            prDetails = resultValue
 
-        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,dateDetails=dateDetails, prDetails=prDetails)
+        return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,
+                               dateDetails=dateDetails, prDetails=prDetails)
 
 
-
-@app.route('/watchlistDetails', methods=['GET', 'POST', 'DELETE'])
+@app.route('/watchlistDetails', methods=['GET', 'POST'])
 def showWatchlist():
-
     cur = mysql.connection.cursor()
     new_User = session['username']
 
@@ -610,15 +652,15 @@ def showWatchlist():
         listDetails = cur.fetchall()
         newWatchlist = listDetails
 
-    #if listDetail < 0 then scan PRIVATE
+    # if listDetail < 0 then scan PRIVATE
     if resultValue <= 0:
         select_stmt = "SELECT List_Number FROM PROFESSIONAL WHERE Username = %s"
         resultValue = cur.execute(select_stmt, (new_User,))
         if resultValue > 0:
             listDetails = cur.fetchall()
             newWatchlist = listDetails
-
-    #newWatchlist > 0 scan for watchlist
+            listDetails = ''.join(listDetails)
+    # newWatchlist > 0 scan for watchlist
     if resultValue > 0:
         if request.method == 'POST':
             post_id = request.form.get('postStock')
@@ -640,10 +682,35 @@ def showWatchlist():
         cur.execute("SELECT * FROM CONTAIN WHERE Watchlist_ID = %s", ([newWatchlist]))
         allListDetails = cur.fetchall()
 
-    else: allListDetails = resultValue
+    else:
+        allListDetails = resultValue
 
     # add listDetails to render then make an if statment to check if it exists  if not "contact admin to make watchlist"
-    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails, resultValue=resultValue)
+    return render_template('watchlist.html', username=session['username'], allListDetails=allListDetails,
+                           resultValue=resultValue, listDetails=listDetails)
+
+
+@app.route('/deleteStockWatchlist/<string:ID>', methods=['GET', 'POST'])
+def deleteStockWatchlist(ID):
+    watchlist = ID
+    cur = mysql.connection.cursor()
+    form = DeleteFormStockWatchlist()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            stockDetails = request.form
+            stock_id = stockDetails['stock_id']
+
+            existsStatus = cur.execute("DELETE FROM CONTAIN WHERE Watchlist_ID = %s AND Stock_ID=%s",
+                                       ([watchlist, stock_id]))
+            if (existsStatus == 0):
+                flash(f'Stock with the ID {form.stock_id.data} does not exist!', 'danger')
+                return render_template('deleteStockWatchlist.html', title='Delete Stock Watchlist', form=form)
+            else:
+                flash(f'Stock with the ID {form.stock_id.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showWatchlist'))
+    return render_template('deleteStockWatchlist.html', title='Delete Stock Watchlist', form=form)
 
 
 @app.route('/eventDetails')
@@ -671,7 +738,8 @@ def showWeek52():
     resultValue1 = cur.execute("SELECT * FROM Week52")
     if resultValue1 > 0:
         week52Details1 = cur.fetchall()
-    return render_template('week52.html', title='Week 52 Section', username=session['username'], businessIDDetails=businessIDDetails, week52Details1=week52Details1)
+    return render_template('week52.html', title='Week 52 Section', username=session['username'],
+                           businessIDDetails=businessIDDetails, week52Details1=week52Details1)
 
 
 if __name__ == '__main__':

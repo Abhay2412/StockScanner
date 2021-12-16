@@ -3,8 +3,9 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename= 'watchlistDetails.css') }}">
 
-    <h1>{{ username }}'s Watchlist Details</h1> <br/>
+    <h1>{{ username }}'s Watchlist Details  </h1> <br/>
     {% if resultValue %}
+        {{ resultValue[1] }}
         {% if allListDetails %}
             <p> Click on stock to see more information </p>
 
@@ -24,11 +25,8 @@
                 {% endfor %}
                 </tbody>
             </table> <br>
-            <span class="Delete"> Delete Stock From Watchlist:  </span>
-            <form method="DELETE">
-                <input name="text">
-                 <input type="submit" value="delete">
-            </form>
+            <span class="Delete">
+            <a href="{{ url_for('deleteStockWatchlist', ID = listDetails[0]) }}" class="btn btn-primary"> Delete Stock From Watchlist </a></span>
         {% else %}
             <span class="NoList"><p class="Label"> There are no stocks in your watchlist <br> Please view <a
                     href="{{ url_for('showStocks') }}">Stocks Page</a> to add  Stocks to watchlist.</p></span>

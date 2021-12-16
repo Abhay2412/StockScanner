@@ -1,9 +1,10 @@
 {% extends "loginedview.html" %}
 {% block content %}
+ <a href="{{ url_for('showStocks') }}" class="previous">&laquo; Back to Stocks</a><br>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stockInformation.css') }}">
     {% if stockDetails %}
-        <a href="{{ url_for('showStocks') }}" class="previous">&laquo; Previous</a><br>
+
         <section class="card-group">
             <div class="card">
 
