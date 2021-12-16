@@ -35,5 +35,5 @@ You will also see any lint errors in the console.
 
 References: 
 
-Corey Schafer's Tutorial Series found below
+Corey Schafer's Tutorial Series found below <br>
 https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
