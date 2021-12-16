@@ -18,7 +18,7 @@ import yaml
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
 from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
 from forms import DeleteFormAnalyst, UpdateFormAnalyst, AddFormStock, DeleteFormStock, UpdateFormStock
-from forms import DeleteFormStockWatchlist
+from forms import DeleteFormStockWatchlist, ForgotForm
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -57,6 +57,7 @@ def register():
             password = userDetails['password']
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
+
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
             if (existsStatus == 1):
                 flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
@@ -144,6 +145,28 @@ def login():
 
     return render_template('login.html', title='Login', form=form)
 
+@app.route("/forgot", methods=['GET', 'POST'])
+def forgot():
+    form = ForgotForm()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            username = request.form.get('username')
+            newPassword = request.form.get('newPassword')
+
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
+            if (existsStatus == 0):
+                flash(f'Password cannot be updated for {form.username.data} since it does not exists!', 'danger')
+                return render_template('forgot.html', title='Forgot Password', form=form)
+            else:
+                cur.execute("UPDATE USER SET username = %s, password = %s WHERE username = %s",
+                            (username, newPassword, username))
+                mysql.connection.commit()
+                cur.close()
+                flash(f'Password updated for {form.username.data} successfully!', 'success')
+                return redirect(url_for('login'))
+
+    return render_template('forgot.html', title='Forgot Passowrd', form=form)
 
 @app.route("/logout")
 def logout():
@@ -751,6 +774,18 @@ def showWeek52():
     return render_template('week52.html', title='Week 52 Section', username=session['username'],
                            businessIDDetails=businessIDDetails, week52Details1=week52Details1)
 
+@app.route('/showSecFiling')
+def showSecFiling():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM SECFILING")
+    if resultValue > 0:
+        secFilingDetails = cur.fetchall()
+    return render_template('secFiling.html', title='Section Filing', username=session['username'],
+                           secFilingDetails=secFilingDetails)
+
+@app.route('/showOffering')
+def showOffering():
+    return render_template('offering.html', title='Offering', username=session['username'])
 
 if __name__ == '__main__':
     app.run(

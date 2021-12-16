@@ -4,7 +4,6 @@ from flask_mysqldb import MySQL
 from flask import Blueprint
 import yaml
 
-from forms import RegistrationForm, LoginForm
 app = Flask(__name__) #Instantiating it here
 belongsto_api = Blueprint('belongsto_api', __name__)
 
