@@ -768,6 +768,18 @@ def showWeek52():
     return render_template('week52.html', title='Week 52 Section', username=session['username'],
                            businessIDDetails=businessIDDetails, week52Details1=week52Details1)
 
+@app.route('/showSecFiling')
+def showSecFiling():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM SECFILING")
+    if resultValue > 0:
+        secFilingDetails = cur.fetchall()
+    return render_template('secFiling.html', title='Section Filing', username=session['username'],
+                           secFilingDetails=secFilingDetails)
+
+@app.route('/showOffering')
+def showOffering():
+    return render_template('offering.html', title='Offering', username=session['username'])
 
 if __name__ == '__main__':
     app.run(
