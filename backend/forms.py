@@ -45,6 +45,17 @@ class UpdateFormUser(FlaskForm):
 
     submit = SubmitField('Update User')
 
+class ForgotForm(FlaskForm):
+    username = StringField('Username',
+                           validators=[DataRequired(), Length(min=2, max=25)])
+
+    newPassword = PasswordField('New Password',
+                             validators=[DataRequired(), Length(min=8, max=20)])
+    
+    confirmNewPassword = PasswordField('Confirm New Password',
+                             validators=[DataRequired(), Length(min=8, max=20)])
+
+    submit = SubmitField('Update Password')
 
 class AddFormExchange(FlaskForm):
     name = StringField('Name',
