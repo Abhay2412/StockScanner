@@ -32,3 +32,8 @@ You will also see any lint errors in the console.
 - Python
 - HTML/CSS
 - Javascript
+
+References: 
+
+Corey Schafer's Tutorial Series found below
+https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
