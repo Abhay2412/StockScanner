@@ -57,7 +57,6 @@ def register():
             password = userDetails['password']
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
-
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
             if (existsStatus == 1):
                 flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
@@ -139,7 +138,10 @@ def login():
                 session['loggedin'] = True
                 session['username'] = singleUser[0]
                 flash('You have been logged in!', 'success')
-                return redirect(url_for('showStocks'))
+                if singleUser[2] == "Professional":
+                    return redirect(url_for('showProView'))
+                else:
+                    return redirect(url_for('showStocks'))
             else:
                 flash('Login Failed. Please check your credentials again.', 'danger')
 
@@ -152,6 +154,7 @@ def forgot():
         if request.method == 'POST':
             username = request.form.get('username')
             newPassword = request.form.get('newPassword')
+            confirmNewPassword = request.form.get('confirmNewPassword')
 
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
@@ -660,14 +663,8 @@ def showStockInformation(ID):
         else:
             prDetails = resultValue
 
-        result= cur.execute("SELECT * FROM ANALYST WHERE ID = %s", ([ID]))
-        if result > 0:
-            analystDetails = cur.fetchall()
-        else:
-            analystDetails = result
-
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,
-                               dateDetails=dateDetails, prDetails=prDetails, analystDetails=analystDetails)
+                               dateDetails=dateDetails, prDetails=prDetails)
 
 
 @app.route('/watchlistDetails', methods=['GET', 'POST'])
@@ -786,6 +783,9 @@ def showSecFiling():
 @app.route('/showOffering')
 def showOffering():
     return render_template('offering.html', title='Offering', username=session['username'])
+@app.route('/showProView')
+def showProView():
+    return render_template('showProView.html', title='Professional View', username=session['username'])
 
 if __name__ == '__main__':
     app.run(
