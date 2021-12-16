@@ -57,6 +57,7 @@ def register():
             password = userDetails['password']
             permissions = request.form['user_type']
             cur = mysql.connection.cursor()
+
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
             if (existsStatus == 1):
                 flash(f'Account cannot be created for {form.username.data} since it already exists!', 'danger')
@@ -151,7 +152,6 @@ def forgot():
         if request.method == 'POST':
             username = request.form.get('username')
             newPassword = request.form.get('newPassword')
-            confirmNewPassword = request.form.get('confirmNewPassword')
 
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM USER WHERE USERNAME = %s", ([username]))
