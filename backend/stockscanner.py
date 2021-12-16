@@ -337,239 +337,6 @@ def newList():
     return jsonify("New Watchlist Created")
 
 
-# -----------Offering API Calls----------------------------
-@app.route("/offering", methods=['POST', 'GET'])
-def offering():
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        json = request.json
-
-        new_ID = json['ID']
-        new_Company_ID = json['Company_ID']
-        new_Prediction_ID = json['Prediction_ID']
-        new_Predict_Stock_Price = json['Predict_Stock_Price']
-        new_Strong_Buy = json['Strong_Buy']
-        new_Rating_Buy = json['Rating_Buy']
-        new_Rating_Sell = json['Rating_Sell']
-        new_Strong_Sell = json['Strong_Sell']
-        new_Rating_Hold = json['Rating_Hold']
-        new_Stock_Price = json['Stock_Price']
-        new_Sector = json['Sector']
-        new_Address = json['Address']
-        new_Founding_Date = json['Founding_Date']
-        new_Business_Name = json['Business_Name']
-
-        new_Offering_ID = json['Offering_ID']
-        new_Quantity_of_stock = json['Quantity_of_stock']
-        new_Price_offered_at = json['Price_offered_at']
-        new_Status_Complete = json['Status_Complete']
-        new_Status_Incomplete = json['Status_Incomplete']
-
-        cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-        cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)",
-                    (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-        cur.execute(
-            "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy,
-             new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
-
-        cur.execute(
-            "INSERT INTO OFFERING(Offering_ID, ID, Quantity_of_stock, Price_offered_at, Status_Complete, Status_Incomplete) VALUES(%s, %s, %s, %s, %s, %s)",
-            (new_Offering_ID, new_ID, new_Quantity_of_stock, new_Price_offered_at, new_Status_Complete,
-             new_Status_Incomplete))
-
-        mysql.connection.commit()
-        cur.close()
-
-        return jsonify("Offering inserted successfully")
-
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-
-        cur.execute("SELECT * FROM OFFERING")
-
-        offering_row = cur.fetchall()
-        respone = jsonify({'Offering': offering_row})
-        respone.status_code = 200
-
-        cur.close()
-
-        return respone
-
-
-@app.route("/offering/<string:Offering_ID>", methods=['DELETE'])
-def delete_offering(Offering_ID):
-    cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM OFFERING WHERE Offering_ID = %s", ([Offering_ID]))
-
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify("Offering deleted successfully")
-
-
-@app.route("/offering/<string:Offering_ID>", methods=['GET'])
-def get_offering(Offering_ID):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM OFFERING WHERE Offering_ID = %s", ([Offering_ID]))
-    specific_offering_details = cur.fetchall()
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify({'Offering': specific_offering_details})
-
-
-# -----------Belongs To API Calls--------------------------
-@app.route("/belongsto", methods=['POST', 'GET'])
-def belongsto():
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        json = request.json
-
-        new_ID = json['ID']
-        new_Company_ID = json['Company_ID']
-        new_Prediction_ID = json['Prediction_ID']
-        new_Predict_Stock_Price = json['Predict_Stock_Price']
-        new_Strong_Buy = json['Strong_Buy']
-        new_Rating_Buy = json['Rating_Buy']
-        new_Rating_Sell = json['Rating_Sell']
-        new_Strong_Sell = json['Strong_Sell']
-        new_Rating_Hold = json['Rating_Hold']
-        new_Stock_Price = json['Stock_Price']
-        new_Sector = json['Sector']
-        new_Address = json['Address']
-        new_Founding_Date = json['Founding_Date']
-        new_Business_Name = json['Business_Name']
-
-        new_Name = json['Name']
-        new_Location = json['Location']
-        new_Number_of_Tickers = json['Number_of_Tickers']
-
-        cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-        cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)",
-                    (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-        cur.execute(
-            "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy,
-             new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
-
-        cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)",
-                    (new_Name, new_Location, new_Number_of_Tickers))
-
-        cur.execute("INSERT INTO BELONGSTO(ID, Name) VALUES(%s, %s)", (new_ID, new_Name))
-
-        mysql.connection.commit()
-        cur.close()
-
-        return jsonify("BelongsTo inserted successfully")
-
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-
-        cur.execute("SELECT * FROM BELONGSTO")
-
-        belongsto_row = cur.fetchall()
-        respone = jsonify({'Belongs To': belongsto_row})
-        respone.status_code = 200
-
-        cur.close()
-
-        return respone
-
-
-@app.route("/belongsto/<string:ID>", methods=['DELETE'])
-def delete_belongsto(ID):
-    cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM BELONGSTO WHERE ID = %s", ([ID]))
-
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify("BelongsTo deleted successfully")
-
-
-@app.route("/belongsto/<string:ID>", methods=['GET'])
-def get_belongsto(ID):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM BELONGSTO WHERE ID = %s", ([ID]))
-    specific_belongsto_details = cur.fetchall()
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify({'Belongs To': specific_belongsto_details})
-
-
-# -----------Exchanges API Calls--------------------------
-@app.route("/exchange", methods=['POST', 'GET', 'PUT'])
-def exchange():
-    if request.method == 'POST':
-        cur = mysql.connection.cursor()
-        json = request.json
-
-        new_Name = json['Name']
-        new_Location = json['Location']
-        new_Number_of_Tickers = json['Number_of_Tickers']
-
-        cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)",
-                    (new_Name, new_Location, new_Number_of_Tickers))
-
-        mysql.connection.commit()
-        cur.close()
-
-        return jsonify("Exchange inserted successfully")
-
-    if request.method == 'GET':
-        cur = mysql.connection.cursor()
-
-        cur.execute("SELECT * FROM EXCHANGES")
-
-        exchange_row = cur.fetchall()
-        respone = jsonify({'Exchange': exchange_row})
-        respone.status_code = 200
-
-        cur.close()
-
-        return respone
-
-    if request.method == 'PUT':
-        cur = mysql.connection.cursor()
-        json = request.json
-
-        new_Name = json['Name']
-        new_Location = json['Location']
-        new_Number_of_Tickers = json['Number_of_Tickers']
-
-        cur.execute("UPDATE EXCHANGES SET Name=%s, Location=%s, Number_of_Tickers=%s WHERE Name=%s",
-                    (new_Name, new_Location, new_Number_of_Tickers, new_Name))
-
-        mysql.connection.commit()
-        cur.close()
-
-        return jsonify("Exchange updated successfully")
-
-
-@app.route("/exchange/<string:Name>", methods=['DELETE'])
-def delete_exchange(Name):
-    cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM EXCHANGES WHERE Name = %s", ([Name]))
-
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify("Exchange deleted successfully")
-
-
-@app.route("/exchange/<string:Name>", methods=['GET'])
-def get_exchange(Name):
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM EXCHANGES WHERE Name = %s", ([Name]))
-    specific_exchange_details = cur.fetchall()
-    mysql.connection.commit()
-    cur.close()
-
-    return jsonify({'Exchange': specific_exchange_details})
-
-
 # -----------Analyst API Calls--------------------------
 @app.route("/analyst", methods=['POST', 'GET', 'PUT'])
 def analyst():
@@ -578,30 +345,9 @@ def analyst():
         json = request.json
 
         new_ID = json['ID']
-        new_Company_ID = json['Company_ID']
-        new_Prediction_ID = json['Prediction_ID']
-        new_Predict_Stock_Price = json['Predict_Stock_Price']
-        new_Strong_Buy = json['Strong_Buy']
-        new_Rating_Buy = json['Rating_Buy']
-        new_Rating_Sell = json['Rating_Sell']
-        new_Strong_Sell = json['Strong_Sell']
-        new_Rating_Hold = json['Rating_Hold']
-        new_Stock_Price = json['Stock_Price']
-        new_Sector = json['Sector']
-        new_Address = json['Address']
-        new_Founding_Date = json['Founding_Date']
-        new_Business_Name = json['Business_Name']
         new_Analyst_ID_Number = json['Analyst_ID_Number']
         new_Name = json['Name']
         new_Company = json['Company']
-
-        cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-        cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)",
-                    (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
-        cur.execute(
-            "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy,
-             new_Rating_Sell, new_Strong_Sell, new_Rating_Hold, new_Stock_Price, new_Sector))
 
         cur.execute("INSERT INTO ANALYST(Analyst_ID_Number, ID, Name, Company) VALUES(%s, %s, %s, %s)",
                     (new_Analyst_ID_Number, new_ID, new_Name, new_Company))
@@ -662,6 +408,73 @@ def get_analyst(Analyst_ID_Number):
     cur.close()
 
     return jsonify({'Analyst': specific_analyst_details})
+
+
+# -----------Belongs To API Calls--------------------------
+@app.route("/belongsto", methods=['POST', 'GET', 'PUT'])
+def belongsto():
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_ID = json['ID']
+        new_Name = json['Name']
+
+        cur.execute("INSERT INTO BELONGSTO(ID, Name) VALUES(%s, %s)", (new_ID, new_Name))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("BelongsTo inserted successfully")
+
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT * FROM BELONGSTO")
+
+        belongsto_row = cur.fetchall()
+        respone = jsonify({'Belongs To': belongsto_row})
+        respone.status_code = 200
+
+        cur.close()
+
+        return respone
+
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_ID = json['ID']
+        new_Name = json['Name']
+
+        cur.execute("UPDATE BELONGSTO SET ID = %s, Name = %s Where ID = %s", (new_ID, new_Name, new_ID))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("BelongsTo updated successfully")
+
+
+@app.route("/belongsto/<string:ID>", methods=['DELETE'])
+def delete_belongsto(ID):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM BELONGSTO WHERE ID = %s", ([ID]))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify("BelongsTo deleted successfully")
+
+
+@app.route("/belongsto/<string:ID>", methods=['GET'])
+def get_belongsto(ID):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM BELONGSTO WHERE ID = %s", ([ID]))
+    specific_belongsto_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({'Belongs To': specific_belongsto_details})
 
 
 # -----------Business API Calls--------------------------
@@ -735,7 +548,161 @@ def get_business(Business_ID):
     mysql.connection.commit()
     cur.close()
 
-    return jsonify({'Stock': specific_business_details})
+    return jsonify({'Business': specific_business_details})
+
+
+# -----------Exchanges API Calls--------------------------
+@app.route("/exchange", methods=['POST', 'GET', 'PUT'])
+def exchange():
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_Name = json['Name']
+        new_Location = json['Location']
+        new_Number_of_Tickers = json['Number_of_Tickers']
+
+        cur.execute("INSERT INTO EXCHANGES(Name, Location, Number_of_Tickers) VALUES(%s, %s, %s)",
+                    (new_Name, new_Location, new_Number_of_Tickers))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Exchange inserted successfully")
+
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT * FROM EXCHANGES")
+
+        exchange_row = cur.fetchall()
+        respone = jsonify({'Exchange': exchange_row})
+        respone.status_code = 200
+
+        cur.close()
+
+        return respone
+
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_Name = json['Name']
+        new_Location = json['Location']
+        new_Number_of_Tickers = json['Number_of_Tickers']
+
+        cur.execute("UPDATE EXCHANGES SET Name = %s, Location = %s, Number_of_Tickers = %s WHERE Name = %s",
+                    (new_Name, new_Location, new_Number_of_Tickers, new_Name))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Exchange updated successfully")
+
+
+@app.route("/exchange/<string:Name>", methods=['DELETE'])
+def delete_exchange(Name):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM EXCHANGES WHERE Name = %s", ([Name]))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify("Exchange deleted successfully")
+
+
+@app.route("/exchange/<string:Name>", methods=['GET'])
+def get_exchange(Name):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM EXCHANGES WHERE Name = %s", ([Name]))
+    specific_exchange_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({'Exchange': specific_exchange_details})
+
+
+# -----------Offering API Calls----------------------------
+@app.route("/offering", methods=['POST', 'GET', 'PUT'])
+def offering():
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_ID = json['ID']
+
+        new_Offering_ID = json['Offering_ID']
+        new_Quantity_of_stock = json['Quantity_of_stock']
+        new_Price_offered_at = json['Price_offered_at']
+        new_Status_Complete = json['Status_Complete']
+        new_Status_Incomplete = json['Status_Incomplete']
+
+        cur.execute(
+            "INSERT INTO OFFERING(Offering_ID, ID, Quantity_of_stock, Price_offered_at, Status_Complete, Status_Incomplete) VALUES(%s, %s, %s, %s, %s, %s)",
+            (new_Offering_ID, new_ID, new_Quantity_of_stock, new_Price_offered_at, new_Status_Complete,
+             new_Status_Incomplete))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Offering inserted successfully")
+
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+
+        cur.execute("SELECT * FROM OFFERING")
+
+        offering_row = cur.fetchall()
+        respone = jsonify({'Offering': offering_row})
+        respone.status_code = 200
+
+        cur.close()
+
+        return respone
+
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        new_ID = json['ID']
+
+        new_Offering_ID = json['Offering_ID']
+        new_Quantity_of_stock = json['Quantity_of_stock']
+        new_Price_offered_at = json['Price_offered_at']
+        new_Status_Complete = json['Status_Complete']
+        new_Status_Incomplete = json['Status_Incomplete']
+
+        cur.execute(
+            "UPDATE OFFERING SET Offering_ID=%s, ID = %s, Quantity_of_stock=%s, Price_offered_at=%s, Status_Complete=%s, Status_Incomplete=%s WHERE Offering_ID=%s",
+            (new_Offering_ID, new_ID, new_Quantity_of_stock, new_Price_offered_at, new_Status_Complete,
+             new_Status_Incomplete, new_Offering_ID))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Offering updated successfully")
+
+
+@app.route("/offering/<string:Offering_ID>", methods=['DELETE'])
+def delete_offering(Offering_ID):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM OFFERING WHERE Offering_ID = %s", ([Offering_ID]))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify("Offering deleted successfully")
+
+
+@app.route("/offering/<string:Offering_ID>", methods=['GET'])
+def get_offering(Offering_ID):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM OFFERING WHERE Offering_ID = %s", ([Offering_ID]))
+    specific_offering_details = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({'Offering': specific_offering_details})
 
 
 # -----------Stock API Calls--------------------------
@@ -756,13 +723,7 @@ def stocks():
         new_Rating_Hold = json['Rating_Hold']
         new_Stock_Price = json['Stock_Price']
         new_Sector = json['Sector']
-        new_Address = json['Address']
-        new_Founding_Date = json['Founding_Date']
-        new_Business_Name = json['Business_Name']
 
-        cur.execute("INSERT INTO Prediction(P_ID) VALUES(%s)", ([new_Prediction_ID]))
-        cur.execute("INSERT INTO BUSINESS(Business_ID, Address, Founding_Date, Business_Name) VALUES(%s, %s, %s, %s)",
-                    (new_Company_ID, new_Address, new_Founding_Date, new_Business_Name))
         cur.execute(
             "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (new_ID, new_Company_ID, new_Prediction_ID, new_Predict_Stock_Price, new_Strong_Buy, new_Rating_Buy,
@@ -833,6 +794,363 @@ def get_stock(ID):
 
     return jsonify({'Stock': specific_stock_details})
 
+
+#####################PR:##########################################11111111111111111
+@app.route("/pr", methods=['POST', 'GET', 'PUT'])
+def pr():
+    # POST
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        new_Headline = json['Headline']
+        new_Predict_PR = json['Predict_PR']
+
+        cur.execute(
+            "INSERT INTO PR(Event_ID, P_ID, Headline, Predict_PR) VALUES(%s, %s, %s, %s)",
+            (newID, newPID, new_Headline, new_Predict_PR)
+        )
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("PR POSTED successfully")
+
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        getAll_stmt = "SELECT * FROM PR"
+        cur.execute(getAll_stmt)
+        getALL_Details = cur.fetchall()
+
+        cur.close();
+        return jsonify({'PR': getALL_Details})
+
+    # PUT
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        new_Headline = json['Headline']
+        new_Predict_PR = json['Predict_PR']
+
+        cur.execute(
+            "UPDATE PR SET Event_ID=%s, P_ID=%s, Headline=%s, Predict_PR=%s WHERE Event_ID=%s",
+            (newID, newPID, new_Headline, new_Predict_PR, newID)
+        )
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("PR UPDATED successfully")
+
+
+
+@app.route("/pr/<string:event_id>", methods=['GET'])
+def pr2(event_id):
+
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        select_stmt = "SELECT * FROM PR WHERE Event_ID = %s"
+        cur.execute(select_stmt, (event_id,))
+        event_Details = cur.fetchall()
+
+        cur.close()
+        return jsonify({'PR': event_Details})
+
+    # GET STOCK PR's
+
+
+#############Prediction:##########################################2222222222222222
+@app.route("/prediction", methods=['POST', 'GET', 'PUT'])
+def prediction():
+        # POST
+        if request.method == 'POST':
+            cur = mysql.connection.cursor()
+            json = request.json
+
+            newID = json['P_ID']
+            cur.execute(
+                "INSERT INTO PREDICTION(P_ID) VALUES (%s)",
+                (newID)
+            )
+
+            mysql.connection.commit()
+            cur.close()
+
+            return jsonify("PREDICTION POSTED successfully")
+        # GET
+        if request.method == 'GET':
+            cur = mysql.connection.cursor()
+            getAll_stmt = "SELECT * FROM PREDICTION"
+            cur.execute(getAll_stmt)
+            getALL_Details = cur.fetchall()
+
+            cur.close()
+            return jsonify({'Prediction': getALL_Details})
+
+        # PUT
+        if request.method == 'PUT':
+            cur = mysql.connection.cursor()
+            json = request.json
+
+            newID = json['P_ID']
+
+            cur.execute("UPDATE PREDICTION SET P_ID=%s WHERE P_ID=%s",
+                        (newID, newID))
+
+            mysql.connection.commit()
+            cur.close()
+
+            return jsonify("PREDICTION UPDATED successfully")
+
+@app.route("/prediction/<string:p_id>", methods=['GET'])
+def prediction2(p_id):
+
+        # GET
+        if request.method == 'GET':
+            cur = mysql.connection.cursor()
+            select_stmt = "SELECT * FROM PREDICTION WHERE P_ID = %s"
+            cur.execute(select_stmt, (p_id,))
+            predict_Details = cur.fetchall()
+
+            cur.close()
+            return jsonify({'Prediction': predict_Details})
+
+
+
+####################Secfiling##########################################333333333333
+@app.route("/secfiling", methods=['GET', 'POST', 'PUT'])
+def secfiling2():
+    # POST
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        new_Type_of_Filing = json['Type_of_Filing']
+        new_Predict_SEC_Filing = json['Predict_SEC_Filing']
+
+        cur.execute(
+            "INSERT INTO SECFILING(Event_ID, P_ID, Type_of_Filing, Predict_SEC_Filing) VALUES (%s, %s, %s, %s)",
+            (newID, newPID, new_Type_of_Filing, new_Predict_SEC_Filing)
+        )
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("SEC POSTED successfully")
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        selectAll_stmt = "SELECT * FROM SECFILING"
+        cur.execute(selectAll_stmt)
+        selectAll = cur.fetchall()
+
+        cur.close()
+        return jsonify({'Secfiling': selectAll})
+
+        # PUT
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        new_Type_of_Filing = json['Type_of_Filing']
+        new_Predict_SEC_Filing = json['Predict_SEC_Filing']
+
+        cur.execute(
+            "UPDATE SECFILING SET Event_ID=%s, P_ID=%s, Type_of_Filing=%s, Predict_SEC_Filing=%s WHERE Event_ID=%s",
+            (newID, newPID, new_Type_of_Filing, new_Predict_SEC_Filing, newID))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("SEC UPDATED successfully")
+
+
+
+@app.route("/secfiling/<string:event_id>", methods=['GET'])
+def secfiling(event_id):
+
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        select_stmt = "SELECT * FROM SECFILING WHERE Event_ID = %s"
+        cur.execute(select_stmt, (event_id,))
+        event_Details = cur.fetchall()
+
+        cur.close()
+        return jsonify({'SEC Filing': event_Details})
+
+##############Week52:############################444444444444444444444444444444444
+@app.route("/week52", methods=['GET', 'POST', 'PUT'])
+def week52():
+    # POST
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        newValue_1 = json['Value_1']
+        newTH = json['Type_High']
+        newTL = json['Type_Low']
+        new_Predict_52 = json['Predict_52Week']
+
+        cur.execute(
+            "INSERT INTO WEEK52(Event_ID, P_ID, Value_1, Type_High, Type_Low, Predict_52Week) VALUES (%s, %s, %s, %s, %s, %s)",
+            (newID, newPID, newValue_1, newTH, newTL, new_Predict_52)
+        )
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("52 Week POSTED successfully")
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        selectAll_stmt = "SELECT * FROM WEEK52"
+        cur.execute(selectAll_stmt)
+        selectAll = cur.fetchall()
+
+        cur.close()
+        return jsonify({'Week52': selectAll})
+
+        # PUT
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        newPID = json['P_ID']
+        newValue_1 = json['Value_1']
+        newTH = json['Type_High']
+        newTL = json['Type_Low']
+        new_Predict_52 = json['Predict_52Week']
+
+        cur.execute(
+            "UPDATE WEEK52 SET Event_ID=%s, P_ID=%s, Value_1=%s, Type_High=%s, Type_Low=%s, Predict_52Week=%s WHERE Event_ID=%s",
+            (newID, newPID, newValue_1, newTH, newTL, new_Predict_52, newID))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("SEC updated successfully")
+
+
+
+@app.route("/week52/<string:event_id>", methods=['GET'])
+def week522(event_id):
+
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        select_stmt = "SELECT * FROM WEEK52 WHERE Event_ID = %s"
+        cur.execute(select_stmt, (event_id,))
+        event_Details = cur.fetchall()
+
+        cur.close()
+        return jsonify({'Week52': event_Details})
+
+#################Stockevent:##################################5555555555555555555
+@app.route("/stockevent", methods=['GET', 'POST', 'PUT'])
+def stockevent2():
+    # POST
+    if request.method == 'POST':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        sID = json['Stock_ID']
+        newPID = json['P_ID']
+        nTime = json['Time']
+        nDate = json['Date']
+        nBear = json['Bearish_sentiment']
+        nBull = json['Bullish_sentiment']
+        nNeutral = json['Neutral_sentiment']
+        nChange = json['Price_Change']
+        new_Predict_Stock_Events = json['Predict_Stock_Events']
+
+        cur.execute(
+            "INSERT INTO STOCKEVENT(Event_ID, Stock_ID, P_ID, Time, Date, Bearish_sentiment, Bullish_sentiment, Neutral_sentiment, Price_Change, Predict_Stock_Events) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+            (newID, sID, newPID, nTime, nDate, nBear, nBull, nNeutral, nChange, new_Predict_Stock_Events)
+        )
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Stockevent INSERTED successfully")
+    # GET
+    if request.method == 'GET':
+        # cur = mysql.connection.cursor()
+        # selectAll_stmt = "SELECT * FROM STOCKEVENT"
+        # cur.execute(selectAll_stmt)
+        # selectAll = cur.fetchall()
+        #
+        # cur.close()
+        # return jsonify({'Stockevent': selectAll})
+
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM STOCKEVENT")
+
+        stocks_row = cur.fetchall()
+        if isinstance(stocks_row, (datetime, date)):
+            stocks_row.isoformat()
+        respone = jsonify({'Stockevent': stocks_row})
+        respone.status_code = 200
+
+        cur.close()
+
+        return respone
+
+    # PUT
+    if request.method == 'PUT':
+        cur = mysql.connection.cursor()
+        json = request.json
+
+        newID = json['Event_ID']
+        sID = json['Stock_ID']
+        newPID = json['P_ID']
+        nTime = json['Time']
+        nDate = json['Date']
+        nBear = json['Bearish_sentiment']
+        nBull = json['Bullish_sentiment']
+        nNeutral = json['Neutral_sentiment']
+        nChange = json['Price_Change']
+        new_Predict_Stock_Events = json['Predict_Stock_Events']
+
+        cur.execute(
+            "UPDATE STOCKEVENT SET Event_ID=%s, Stock_ID=%s, P_ID=%s, Time=%s, Date=%s, Bearish_sentiment=%s, Bullish_sentiment=%s, "
+            "Neutral_sentiment=%s, Price_Change=%s Predict_Stock_Events=%s WHERE Event_ID=%s",
+            (newID, sID, newPID, nTime, nDate, nBear, nBull, nNeutral, nChange, new_Predict_Stock_Events,
+             newID))
+
+        mysql.connection.commit()
+        cur.close()
+
+        return jsonify("Stockevent UPDATED successfully")
+
+
+
+@app.route("/stockevent/<string:event_id>", methods=['GET'])
+def stockevent(event_id):
+    # GET
+    if request.method == 'GET':
+        cur = mysql.connection.cursor()
+        select_stmt = "SELECT * FROM STOCKEVENT WHERE Event_ID = %s"
+        cur.execute(select_stmt, (event_id,))
+        event_Details = cur.fetchall()
+
+        cur.close()
+        return jsonify({'Stockevent': event_Details})
 
 # ----------------------------------------End of the API Calls--------------------------------------------------------------
 
