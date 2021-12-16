@@ -160,7 +160,7 @@ def forgot():
                 return render_template('forgot.html', title='Forgot Password', form=form)
             else:
                 cur.execute("UPDATE USER SET username = %s, password = %s WHERE username = %s",
-                            (username, newPassword, confirmNewPassword, username))
+                            (username, newPassword, username))
                 mysql.connection.commit()
                 cur.close()
                 flash(f'Password updated for {form.username.data} successfully!', 'success')
