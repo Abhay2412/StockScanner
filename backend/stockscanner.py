@@ -715,7 +715,11 @@ def deleteStockWatchlist(ID):
 
 @app.route('/eventDetails')
 def showEvents():
-    return render_template('event.html', username=session['username'])
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM STOCKEVENT")
+    if resultValue > 0:
+        eventDetails1 = cur.fetchall()
+    return render_template('event.html', username=session['username'], eventDetails1=eventDetails1)
 
 
 @app.route('/prDetails')
