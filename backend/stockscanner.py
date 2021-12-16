@@ -637,8 +637,14 @@ def showStockInformation(ID):
         else:
             prDetails = resultValue
 
+        result= cur.execute("SELECT * FROM ANALYST WHERE ID = %s", ([ID]))
+        if result > 0:
+            analystDetails = cur.fetchall()
+        else:
+            analystDetails = result
+
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,
-                               dateDetails=dateDetails, prDetails=prDetails)
+                               dateDetails=dateDetails, prDetails=prDetails, analystDetails=analystDetails)
 
 
 @app.route('/watchlistDetails', methods=['GET', 'POST'])
