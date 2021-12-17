@@ -18,7 +18,7 @@ import yaml
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
 from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
 from forms import DeleteFormAnalyst, UpdateFormAnalyst, AddFormStock, DeleteFormStock, UpdateFormStock
-from forms import DeleteFormStockWatchlist, ForgotForm
+from forms import DeleteFormStockWatchlist, ForgotForm, PROAddFormOffering, PROUpdateFormOffering, PRODeleteFormOffering
 
 app = Flask(__name__)  # Instantiating it here
 
