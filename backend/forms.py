@@ -263,11 +263,11 @@ class PROAddFormOffering(FlaskForm):
     offer_price = IntegerField('Offer Price        ',
                                validators=[DataRequired()])
 
-    statusComplete = StringField('Status Complete     ',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+    statusComplete = SelectField('Status Complete',
+                         choices=[("Yes", "Yes"), ("No", "No")])
 
-    statusNotComplete = StringField('Status Incomplete    ',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+    statusNotComplete = SelectField('Status Incomplete',
+                         choices=[("Yes", "Yes"), ("No", "No")])
 
 
     submit = SubmitField('Add Offering')
@@ -277,11 +277,11 @@ class PROUpdateFormOffering(FlaskForm):
                                     validators=[DataRequired(), Length(min=2, max=4)])
 
 
-        statusComplete = StringField('Status Complete',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+        statusComplete = SelectField('Status Complete',
+                         choices=[("Yes", "Yes"), ("No", "No")])
 
         statusNotComplete = StringField('Status Incomplete',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+                         choices=[("Yes", "Yes"), ("No", "No")])
 
 
         submit = SubmitField('Update Offering')
