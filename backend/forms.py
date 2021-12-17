@@ -196,6 +196,8 @@ class AddFormStock(FlaskForm):
 
     sector = StringField('Sector',
                          validators=[DataRequired(), Length(min=2, max=255)])
+    belongs_to = StringField('Belongs To Exchange(Name)',
+                       validators=[DataRequired(), Length(min=2, max=25)])
 
     submit = SubmitField('Add Stock')
 
@@ -235,7 +237,10 @@ class UpdateFormStock(FlaskForm):
 
     sector = StringField('Sector',
                          validators=[DataRequired(), Length(min=2, max=255)])
-
+    
+    belongs_to = StringField('Belongs To Exchange(Name)',
+                       validators=[DataRequired(), Length(min=2, max=25)])
+    
     submit = SubmitField('Update Stock')
 
 

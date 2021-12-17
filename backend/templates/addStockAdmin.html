@@ -149,6 +149,19 @@
             {{ form.sector(class = "form-control-lg") }}    
         {% endif %}
       </div>
+      <div class="form-group">
+        {{ form.belongs_to.label(class = "form-control-label") }} 
+        {% if form.belongs_to.errors %}
+            {{ form.belongs_to(class = "form-control-lg is-invalid") }}  
+                <div class="invalid-feedback">
+                    {% for errors in form.belongs_to.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+        {% else %}
+            {{ form.belongs_to(class = "form-control-lg") }}    
+        {% endif %}
+      </div>
     </fieldset>
     <div class="form-group">
       {{ form.submit(class = "btn btn-outline-info") }}

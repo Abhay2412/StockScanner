@@ -548,6 +548,7 @@ def addStockAdmin():
             rating_hold = stockDetails['rating_hold']
             stock_price = stockDetails['stock_price']
             sector = stockDetails['sector']
+            belongs_to = stockDetails['belongs_to']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
             if (existsStatus == 1):
@@ -558,6 +559,9 @@ def addStockAdmin():
                     "INSERT INTO STOCK(ID, Company_ID, Prediction_ID, Predict_Stock_Price, Strong_Buy, Rating_Buy, Rating_Sell, Strong_Sell, Rating_Hold, Stock_Price, Sector) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell,
                      strong_sell, rating_hold, stock_price, sector))
+                cur.execute(
+                    "INSERT INTO BELONGSTO(ID, Name) VALUES(%s, %s)",
+                    (stock_id, belongs_to))                    
                 flash(f'Stock with the ID {form.stock_id.data} created successfully!', 'success')
             mysql.connection.commit()
             cur.close()
@@ -603,6 +607,7 @@ def updateStockAdmin():
             rating_hold = stockDetails['rating_hold']
             stock_price = stockDetails['stock_price']
             sector = stockDetails['sector']
+            belongs_to = stockDetails['belongs_to']
             cur = mysql.connection.cursor()
             existsStatus = cur.execute("SELECT * FROM STOCK WHERE ID = %s", ([stock_id]))
             if (existsStatus == 0):
@@ -613,6 +618,9 @@ def updateStockAdmin():
                     "UPDATE STOCK SET ID=%s, Company_ID=%s, Prediction_ID=%s, Predict_Stock_Price=%s, Strong_Buy=%s, Rating_Buy=%s, Rating_Sell=%s, Strong_Sell=%s, Rating_Hold=%s, Stock_Price=%s, Sector=%s WHERE ID=%s",
                     (stock_id, company_id, prediction_id, predict_stock_price, strong_buy, rating_buy, rating_sell,
                      strong_sell, rating_hold, stock_price, sector, stock_id))
+                cur.execute(
+                    "UPDATE BELONGSTO SET ID = %s, Name=%s WHERE ID = %s and Name=%s",
+                    (stock_id, belongs_to,stock_id, belongs_to))         
                 flash(f'Stock with the ID {form.stock_id.data} updated successfully!', 'success')
             mysql.connection.commit()
             cur.close()
@@ -663,8 +671,14 @@ def showStockInformation(ID):
         else:
             prDetails = resultValue
 
+        result= cur.execute("SELECT * FROM ANALYST WHERE ID = %s", ([ID]))
+        if result > 0:
+            analystDetails = cur.fetchall()
+        else:
+            analystDetails = result
+
         return render_template('stockInformation.html', username=session['username'], stockDetails=stockDetails,
-                               dateDetails=dateDetails, prDetails=prDetails)
+                               dateDetails=dateDetails, prDetails=prDetails, analystDetails=analystDetails)
 
 
 @app.route('/watchlistDetails', methods=['GET', 'POST'])
