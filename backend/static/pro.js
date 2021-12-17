@@ -1,15 +1,15 @@
 document.getElementById("showAllOfferingButton").onclick = function () {
-    location.href = "offeringall";
+    location.href = "PROshowOffering";
 };
 
 document.getElementById("createOfferingButton").onclick = function () {
-    location.href = "addOfferingPro";
+    location.href = "PROaddOffering";
 };
 
 document.getElementById("deleteOfferingButton").onclick = function () {
-    location.href = "deleteOfferingPro";
+    location.href = "PROdeleteOffering";
 };
 
 document.getElementById("updateOfferingButton").onclick = function () {
-    location.href = "updateOfferingPro";
+    location.href = "PROupdateOffering";
 };

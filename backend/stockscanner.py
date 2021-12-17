@@ -18,7 +18,7 @@ import yaml
 from forms import RegistrationForm, LoginForm, DeleteFormUser, UpdateFormUser, AddFormExchange, DeleteFormExchange
 from forms import UpdateFormExchange, AddFormBusiness, DeleteFormBusiness, UpdateFormBusiness, AddFormAnalyst
 from forms import DeleteFormAnalyst, UpdateFormAnalyst, AddFormStock, DeleteFormStock, UpdateFormStock
-from forms import DeleteFormStockWatchlist, ForgotForm
+from forms import DeleteFormStockWatchlist, ForgotForm, PROAddFormOffering, PROUpdateFormOffering, PRODeleteFormOffering
 
 app = Flask(__name__)  # Instantiating it here
 
@@ -783,9 +783,97 @@ def showSecFiling():
 @app.route('/showOffering')
 def showOffering():
     return render_template('offering.html', title='Offering', username=session['username'])
+
 @app.route('/showProView')
 def showProView():
     return render_template('showProView.html', title='Professional View', username=session['username'])
+
+@app.route('/PROaddOffering', methods=['GET', 'POST'])
+def PROaddOffering():
+    form = PROAddFormOffering()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            offeringDetails = request.form
+            offeringID = offeringDetails['offeringID']
+            iD = offeringDetails['iD']
+            offer_quant = offeringDetails['offer_quant']
+            offer_price = offeringDetails['offer_price']
+            statusComplete = offeringDetails['statusComplete']
+            statusNotComplete = offeringDetails['statusNotComplete']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM OFFERING WHERE Offering_ID = %s", ([offeringID]))
+            if (existsStatus == 1):
+                flash(f'Offering with the ID cannot be created since it already exists!',
+                      'danger')
+                return render_template('PROaddOffering.html', title='Add Offering', form=form)
+            else:
+                cur.execute(
+                    "INSERT INTO OFFERING(Offering_ID, ID, Quantity_of_stock, Price_offered_at, Status_Complete, Status_Incomplete) VALUES(%s, %s, %s, %s, %s, %s)",
+                    (offeringID, iD, offer_quant, offer_price, statusComplete, statusNotComplete))
+                flash(f'OFFERING created successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showOffering'))
+    return render_template('PROaddOffering.html', title='Add Offering', form=form)
+
+@app.route('/PROupdateOffering', methods=['GET', 'POST'])
+def PROupdateOffering():
+     form = PROUpdateFormOffering()
+     if form.validate_on_submit():
+        if request.method == 'POST':
+            offeringDetails = request.form
+            offeringID = offeringDetails['offeringID']
+            statusComplete = offeringDetails['statusComplete']
+            statusNotComplete = offeringDetails['statusNotComplete']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM OFFERING WHERE Offering_ID = %s", ([offeringID]))
+            if (existsStatus == 0):
+                flash(f'Offering with the ID cannot be updated since it does not exists!',
+                      'danger')
+                return render_template('PROupdateOffering.html', title='Update Offering', form=form)
+            else:
+                cur.execute(
+                    "UPDATE OFFERING SET Status_Complete=%s, Status_Incomplete=%s WHERE Offering_ID=%s",
+                    (statusComplete, statusNotComplete, offeringID))
+                flash(f'OFFERING Updated successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showOffering'))
+     return render_template('PROupdateOffering.html', title='Update Offering', form=form)
+
+@app.route('/PROshowOffering')
+def PROshowOffering():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM OFFERING")
+    if resultValue > 0:
+        offering = cur.fetchall()
+
+    return render_template('PROshowOffering.html', title='Show Offering', offering=offering)
+
+@app.route('/PROdeleteOffering', methods=['GET', 'POST'])
+def PROdeleteOffering():
+    form = PRODeleteFormOffering()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            offeringDetails = request.form
+            offerID = offeringDetails['offerID']
+            cur = mysql.connection.cursor()
+            existsStatus = cur.execute("SELECT * FROM OFFERING WHERE Offering_ID = %s", ([offerID]))
+            if (existsStatus == 0):
+                flash(f'Offering with the ID {form.offerID.data} does not exist!', 'danger')
+                return render_template('PROdeleteOffering.html', title='Delete Offering', form=form)
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute("DELETE FROM OFFERING WHERE Offering_ID = %s", ([offerID]))
+
+                mysql.connection.commit()
+                cur.close()
+                flash(f'Offering with the ID {form.offerID.data} deleted successfully!', 'success')
+            mysql.connection.commit()
+            cur.close()
+            return redirect(url_for('showOffering'))
+    return render_template('PROdeleteOffering.html', title='Delete Offering', form=form)
+
 
 if __name__ == '__main__':
     app.run(
