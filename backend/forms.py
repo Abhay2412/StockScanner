@@ -196,6 +196,8 @@ class AddFormStock(FlaskForm):
 
     sector = StringField('Sector',
                          validators=[DataRequired(), Length(min=2, max=255)])
+    belongs_to = StringField('Belongs To Exchange(Name)',
+                       validators=[DataRequired(), Length(min=2, max=25)])
 
     submit = SubmitField('Add Stock')
 
@@ -235,7 +237,10 @@ class UpdateFormStock(FlaskForm):
 
     sector = StringField('Sector',
                          validators=[DataRequired(), Length(min=2, max=255)])
-
+    
+    belongs_to = StringField('Belongs To Exchange(Name)',
+                       validators=[DataRequired(), Length(min=2, max=25)])
+    
     submit = SubmitField('Update Stock')
 
 
@@ -244,7 +249,7 @@ class DeleteFormStockWatchlist(FlaskForm):
                            validators=[DataRequired(), Length(min=2, max=12)])
 
     submit = SubmitField('Delete Stock')
-
+ 
 class PROAddFormOffering(FlaskForm):
     offeringID = StringField('Offering ID Number  ',
                                     validators=[DataRequired(), Length(min=2, max=4)])
@@ -258,11 +263,9 @@ class PROAddFormOffering(FlaskForm):
     offer_price = IntegerField('Offer Price        ',
                                validators=[DataRequired()])
 
-    statusComplete = StringField('Status Complete     ',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+    statusComplete = SelectField('Status Complete', choices=[(No, No), (Yes, Yes)])
 
-    statusNotComplete = StringField('Status Incomplete    ',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+    statusNotComplete = SelectField('Status Incomplete', choices=[(Yes, Yes), (No, No)])
 
 
     submit = SubmitField('Add Offering')
@@ -270,13 +273,10 @@ class PROAddFormOffering(FlaskForm):
 class PROUpdateFormOffering(FlaskForm):
         offeringID = StringField('Offering ID Number',
                                     validators=[DataRequired(), Length(min=2, max=4)])
+        
+        statusComplete = SelectField('Status Complete', choices=[('No', 'No'), ('Yes', 'Yes')])
 
-
-        statusComplete = StringField('Status Complete',
-                         validators=[DataRequired(), Length(min=2, max=3)])
-
-        statusNotComplete = StringField('Status Incomplete',
-                         validators=[DataRequired(), Length(min=2, max=3)])
+        statusNotComplete = SelectField('Status Incomplete', choices=[('Yes', 'Yes'), ('No', 'No')])
 
 
         submit = SubmitField('Update Offering')
