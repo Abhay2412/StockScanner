@@ -249,3 +249,45 @@ class DeleteFormStockWatchlist(FlaskForm):
                            validators=[DataRequired(), Length(min=2, max=12)])
 
     submit = SubmitField('Delete Stock')
+ 
+class PROAddFormOffering(FlaskForm):
+    offeringID = StringField('Offering ID Number  ',
+                                    validators=[DataRequired(), Length(min=2, max=4)])
+
+    iD = StringField('Stock ID           ',
+                           validators=[DataRequired(), Length(min=2, max=12)])
+
+    offer_quant = IntegerField('Quantity of Stock  ',
+                               validators=[DataRequired()])
+
+    offer_price = IntegerField('Offer Price        ',
+                               validators=[DataRequired()])
+
+    statusComplete = StringField('Status Complete     ',
+                         validators=[DataRequired(), Length(min=2, max=3)])
+
+    statusNotComplete = StringField('Status Incomplete    ',
+                         validators=[DataRequired(), Length(min=2, max=3)])
+
+
+    submit = SubmitField('Add Offering')
+
+class PROUpdateFormOffering(FlaskForm):
+        offeringID = StringField('Offering ID Number',
+                                    validators=[DataRequired(), Length(min=2, max=4)])
+
+
+        statusComplete = StringField('Status Complete',
+                         validators=[DataRequired(), Length(min=2, max=3)])
+
+        statusNotComplete = StringField('Status Incomplete',
+                         validators=[DataRequired(), Length(min=2, max=3)])
+
+
+        submit = SubmitField('Update Offering')
+
+class PRODeleteFormOffering(FlaskForm):
+    offerID = StringField('Offer ID',
+                           validators=[DataRequired(), Length(min=1, max=4)])
+
+    submit = SubmitField('Delete Offering')
