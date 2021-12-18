@@ -699,7 +699,6 @@ def showWatchlist():
         if resultValue > 0:
             listDetails = cur.fetchall()
             newWatchlist = listDetails
-            listDetails = ''.join(listDetails)
     # newWatchlist > 0 scan for watchlist
     if resultValue > 0:
         if request.method == 'POST':
@@ -765,72 +764,38 @@ def showEvents():
 @app.route('/prDetails')
 def showPR():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM USER Where Username = %s", ([session['username']]))
-    singleUser = cur.fetchone()
-    if singleUser:
-                #session['loggedin'] = True
-                if singleUser[2] == "Professional":
-                    proViewEnable = 1
-    
     resultValue = cur.execute("SELECT HEADLINE FROM PR")
     if resultValue > 0:
         prDetails1 = cur.fetchall()
     else:
-        if proViewEnable == 1:
-             return render_template('PROprMissing.html', title='News Section', username=session['username'])
         return render_template('prMissing.html', title='News Section', username=session['username'])
-    if proViewEnable == 1:
-             return render_template('PROpr.html', title='News Section', username=session['username'])
     return render_template('pr.html', title='News Section', username=session['username'], prDetails1=prDetails1)
 
 
 @app.route('/week52Details')
 def showWeek52():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM USER Where Username = %s", ([session['username']]))
-    singleUser = cur.fetchone()
-    if singleUser:
-                #session['loggedin'] = True
-                if singleUser[2] == "Professional":
-                    proViewEnable = 1
-    
     resultValue = cur.execute("SELECT * FROM BUSINESS")
     if resultValue > 0:
         businessIDDetails = cur.fetchall()
     resultValue1 = cur.execute("SELECT * FROM Week52")
     if resultValue1 > 0:
         week52Details1 = cur.fetchall()
-    if proViewEnable == 1:
-             return render_template('PROweek52.html', title='Week 52 Section', username=session['username'],
-                                    businessIDDetails=businessIDDetails, week52Details1=week52Details1)
-
     return render_template('week52.html', title='Week 52 Section', username=session['username'],
                            businessIDDetails=businessIDDetails, week52Details1=week52Details1)
 
 @app.route('/showSecFiling')
 def showSecFiling():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM USER Where Username = %s", ([session['username']]))
-    singleUser = cur.fetchone()
-    if singleUser:
-                #session['loggedin'] = True
-                if singleUser[2] == "Professional":
-                    proViewEnable = 1
-    
     resultValue = cur.execute("SELECT * FROM SECFILING")
     if resultValue > 0:
         secFilingDetails = cur.fetchall()
-    if proViewEnable == 1:
-             return render_template('PROsecFiling.html', title='Section Filing', username=session['username'],
-                           secFilingDetails=secFilingDetails)
-
     return render_template('secFiling.html', title='Section Filing', username=session['username'],
                            secFilingDetails=secFilingDetails)
 
 @app.route('/showOffering')
 def showOffering():
     return render_template('offering.html', title='Offering', username=session['username'])
-
 @app.route('/showProView')
 def showProView():
     return render_template('showProView.html', title='Professional View', username=session['username'])
@@ -920,7 +885,6 @@ def PROdeleteOffering():
             cur.close()
             return redirect(url_for('showOffering'))
     return render_template('PROdeleteOffering.html', title='Delete Offering', form=form)
-
 if __name__ == '__main__':
     app.run(
         debug=True)  # Run it here if the name equals name, also the debug ensures that any update made here will be
