@@ -1,4 +1,4 @@
-[![Programming Language-Python](https://img.shields.io/badge/Programming%20Language-Python-yellow)]
+[Programming Language-Python](https://img.shields.io/badge/Programming%20Language-Python-yellow)
 
 [![Programming Language-HTML](https://img.shields.io/badge/Programming%20Language-HTML-red)]
 
