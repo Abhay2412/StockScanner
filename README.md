@@ -1,3 +1,4 @@
+[![Programming Language-Python](https://img.shields.io/badge/Programming%20Language-Python-yellow)
 # CPSC471FinalProjectStockScanner
 
 CPSC 471 Database Management Systems Final Project
