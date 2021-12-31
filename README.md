@@ -1,4 +1,10 @@
-[![Programming Language-Python](https://img.shields.io/badge/Programming%20Language-Python-yellow)
+[![Programming Language-Python]](https://img.shields.io/badge/Programming%20Language-Python-yellow)
+[![Programming Language-HTML]](https://img.shields.io/badge/Programming%20Language-HTML-red)
+[![Programming Language-CSS]](https://img.shields.io/badge/Programming%20Language-CSS-purple)
+[![Programming Language-Javascript]](https://img.shields.io/badge/Programming%20Language-Javascript-lightyellow)
+[![Framework-Flask]](https://img.shields.io/badge/Framework-Flask-black)
+[![Database-MySQL]](https://img.shields.io/badge/Database-MySQL-blue)
+
 # CPSC471FinalProjectStockScanner
 
 CPSC 471 Database Management Systems Final Project
